@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:opcp:schema:0.1:envelope",
+  "title": "OPCP envelope",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "required": ["envelope_version", "trace_id", "idempotency_key", "capability", "process", "principal", "input", "data_classification"],
+      "properties": {
+        "envelope_version": {"const": "0.1"},
+        "trace_id": {"type": "string", "minLength": 1},
+        "idempotency_key": {"type": "string", "minLength": 1},
+        "capability": {
+          "type": "object",
+          "required": ["id", "version"],
+          "properties": {"id": {"type": "string"}, "version": {"type": "string"}}
+        },
+        "process": {
+          "type": "object",
+          "required": ["id", "step"],
+          "properties": {"id": {"type": "string"}, "step": {"type": "string"}}
+        },
+        "principal": {"type": "string", "minLength": 1},
+        "input": {"type": "object"},
+        "data_classification": {"enum": ["public", "internal", "confidential", "restricted"]},
+        "residency": {"type": "array", "items": {"type": "string"}},
+        "segment": {"type": "string"},
+        "lease_expires_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "response": {
+      "type": "object",
+      "required": ["envelope_version", "trace_id", "status", "latency_ms", "rclass", "route"],
+      "properties": {
+        "envelope_version": {"const": "0.1"},
+        "trace_id": {"type": "string"},
+        "status": {"enum": ["ok", "failed", "rejected", "escalated"]},
+        "output": {"type": "object"},
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "reference"],
+            "properties": {"type": {"type": "string"}, "reference": {"type": "string"}}
+          }
+        },
+        "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "cost": {
+          "type": "object",
+          "required": ["amount", "currency"],
+          "properties": {"amount": {"type": "number", "minimum": 0}, "currency": {"type": "string"}}
+        },
+        "latency_ms": {"type": "number", "minimum": 0},
+        "supplier": {
+          "type": "object",
+          "required": ["id", "adapter_version"],
+          "properties": {"id": {"type": "string"}, "adapter_version": {"type": "string"}}
+        },
+        "rclass": {"enum": ["R0", "R1", "R2", "R3", "R4"]},
+        "route": {
+          "type": "object",
+          "required": ["mode", "reason"],
+          "properties": {"mode": {"type": "string"}, "reason": {"type": "string"}}
+        },
+        "error": {"type": "string"}
+      },
+      "allOf": [
+        {"if": {"properties": {"status": {"const": "ok"}}}, "then": {"required": ["output", "supplier"]}}
+      ]
+    }
+  }
+}

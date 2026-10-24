@@ -1,0 +1,94 @@
+# A hypothetical assessment. The bank, suppliers and every figure are invented
+# to show how the scorecard reads; none of it describes a real organisation.
+scorecard_version: "0.1"
+organisation: Example Bank (hypothetical)
+assessed_by: Third-Party Risk Office
+assessment_date: "2026-10-24"
+
+settings:
+  swap_tolerance_days: 90
+  notice_tolerance_days: 90
+  concentration_limit: 0.5
+  lock_in_debt_partial_max: 3
+
+processes:
+  - id: onboarding-idv
+    name: Customer onboarding, identity verification
+    owner: Head of Retail Operations
+    critical: true
+    capability: verify-identity
+    archetype: check
+    supplier: Vendor A (fictional)
+    fallback_supplier: null
+    logic_ownership: vendor_held
+    context_residency: partial
+    authority: vendor
+    lock_in_dependencies:
+      - Proprietary risk signal (device)
+      - Proprietary risk signal (document)
+      - Console-only escalation workflow
+      - Vendor-specific data format
+    contract: {data_return: true, termination_assistance: false, notice_days: 180, end_date: "2027-06-30"}
+    time_to_swap: {contracting_days: 70, onboarding_days: 30, cutover_days: 20, confidence: estimated}
+    baseline: {cycle_time_hours: 26, straight_through_rate: 0.72, exception_rate: 0.18, cost_per_case: 4.10, currency: SGD}
+    notes: Matching rules and escalation thresholds are configured in the vendor's console.
+
+  - id: payments-sanctions
+    name: Payments sanctions screening
+    owner: Head of Financial Crime Compliance
+    critical: true
+    capability: screen-sanctions
+    archetype: check
+    supplier: Vendor A (fictional)
+    fallback_supplier: Vendor C (fictional)
+    logic_ownership: shared
+    context_residency: exportable
+    authority: ours
+    lock_in_dependencies: [Vendor-maintained list enrichment]
+    contract: {data_return: true, termination_assistance: true, notice_days: 90}
+    time_to_swap: {contracting_days: 30, onboarding_days: 30, cutover_days: 25, confidence: estimated}
+
+  - id: loan-docs
+    name: Loan application document extraction
+    owner: Head of Lending Operations
+    critical: true
+    capability: extract-document-fields
+    archetype: extract
+    supplier: Vendor A (fictional)
+    fallback_supplier: null
+    logic_ownership: shared
+    context_residency: trapped
+    authority: vendor
+    lock_in_dependencies: [Custom-trained extraction model]
+    contract: {data_return: false, termination_assistance: false, notice_days: 120, end_date: "2027-03-31"}
+    time_to_swap: {contracting_days: 90, onboarding_days: 45, cutover_days: 60, confidence: estimated}
+
+  - id: customer-notifications
+    name: Customer notifications
+    owner: Head of Customer Experience
+    critical: true
+    capability: send-customer-notification
+    archetype: notify
+    supplier: Vendor D (fictional)
+    fallback_supplier: Vendor E (fictional)
+    logic_ownership: owned
+    context_residency: exportable
+    authority: ours
+    lock_in_dependencies: []
+    contract: {data_return: true, termination_assistance: true, notice_days: 60}
+    time_to_swap: {contracting_days: 20, onboarding_days: 15, cutover_days: 10, confidence: proven, drill_date: "2026-08-14"}
+
+  - id: supplier-invoices
+    name: Supplier invoice capture
+    owner: Head of Finance Operations
+    critical: false
+    capability: extract-document-fields
+    archetype: extract
+    supplier: Vendor B (fictional)
+    fallback_supplier: null
+    logic_ownership: owned
+    context_residency: partial
+    authority: ours
+    lock_in_dependencies: []
+    contract: {data_return: true, termination_assistance: false, notice_days: 60}
+    time_to_swap: {contracting_days: 30, onboarding_days: 10, cutover_days: 15, confidence: estimated}

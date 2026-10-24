@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:opcp:schema:0.1:question-bank",
+  "title": "OPCP question bank",
+  "type": "object",
+  "required": ["bank", "bank_version", "title", "evidence_levels", "roles", "sections", "questions"],
+  "properties": {
+    "bank": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+    "bank_version": {"type": "string"},
+    "title": {"type": "string"},
+    "licence": {"type": "string"},
+    "evidence_levels": {
+      "type": "object",
+      "required": ["declared", "documented", "tested"],
+      "additionalProperties": {"type": "object", "required": ["label", "meaning"]}
+    },
+    "roles": {"type": "object", "additionalProperties": {"type": "string"}},
+    "sections": {
+      "type": "array",
+      "items": {"type": "object", "required": ["id", "title"], "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "intro": {"type": "string"}}}
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "section", "role", "ask", "type", "feeds"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^ERS-[A-Z]{3}-[0-9]{2}$"},
+          "section": {"type": "string"},
+          "role": {"type": "string"},
+          "ask": {"type": "string", "minLength": 5},
+          "help": {"type": "string"},
+          "type": {"enum": ["choice", "number", "percent", "date", "text", "list"]},
+          "unit": {"type": "string"},
+          "required": {"type": "boolean"},
+          "options": {
+            "type": "array",
+            "items": {"type": "object", "required": ["value", "label", "means"], "properties": {"value": {"type": "string"}, "label": {"type": "string"}, "means": {"type": "string"}}}
+          },
+          "feeds": {
+            "oneOf": [
+              {"enum": ["triage", "consistency"]},
+              {"type": "object", "required": ["field"], "properties": {"field": {"type": "string"}}}
+            ]
+          },
+          "evidence": {"type": "object", "properties": {"documented": {"type": "string"}, "tested": {"type": "string"}}, "additionalProperties": false},
+          "refs": {
+            "type": "array",
+            "items": {"type": "object", "required": ["source", "at"], "properties": {"source": {"type": "string"}, "at": {"type": "string"}, "note": {"type": "string"}}, "additionalProperties": false}
+          }
+        },
+        "allOf": [{"if": {"properties": {"type": {"const": "choice"}}}, "then": {"required": ["options"]}}]
+      }
+    },
+    "consistency": {
+      "type": "array",
+      "items": {"type": "object", "required": ["id", "when", "says"], "properties": {"id": {"type": "string"}, "when": {"type": "object"}, "says": {"type": "string"}}}
+    }
+  }
+}

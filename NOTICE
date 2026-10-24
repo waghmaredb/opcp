@@ -1,0 +1,9 @@
+Open Process Control Plane (OPCP)
+Copyright 2026 The OPCP Authors
+
+This product includes software and specifications developed by
+Deepak Waghmare, Shaad Sufi and contributors.
+
+OPCP's authority gate uses the Reversibility Classes (R0-R4) defined in
+"Reversibility Classes for Agent Actions" by Deepak Waghmare and contributors,
+https://github.com/TwoMuchLabs/reversibility-classes, licensed under CC BY 4.0.

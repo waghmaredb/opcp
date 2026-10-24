@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+dist/
+build/
+# Assessments and reports generated in the project root may contain confidential information.
+/assessment*.yaml
+/assessment*.html
+/answers*.json
+/*report*.html

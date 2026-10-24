@@ -1,0 +1,42 @@
+# Capability contract: verify a person's identity against an identity document.
+opcp_version: "0.1"
+id: verify-identity
+version: 1.0.0
+name: Verify identity
+archetype: check
+description: Checks that a person's stated identity matches an identity document and returns a verdict with reasons.
+rclass: R0            # Reads and returns a verdict; no effect on the world.
+data_classification: confidential
+evidence_required: true
+service_level:
+  latency_ms_p95: 3000
+  availability: 0.995
+input:
+  type: object
+  required: [full_name, date_of_birth, document]
+  properties:
+    full_name: {type: string}
+    date_of_birth: {type: string, format: date}
+    document:
+      type: object
+      required: [type, number, issuing_country]
+      properties:
+        type: {enum: [passport, national_id, driving_licence]}
+        number: {type: string}
+        issuing_country: {type: string, pattern: "^[A-Z]{2}$"}
+output:
+  type: object
+  required: [verdict, reason_codes]
+  properties:
+    verdict: {enum: [pass, fail, refer]}
+    reason_codes: {type: array, items: {type: string}}
+    match_score: {type: number, minimum: 0, maximum: 1}
+mappings:
+  apqc_pcf: null           # To map, with a cited source.
+  bian_service_domain: null
+examples:
+  - name: Straightforward passport check
+    input:
+      full_name: Alex Tan
+      date_of_birth: "1990-04-12"
+      document: {type: passport, number: K1234567, issuing_country: SG}

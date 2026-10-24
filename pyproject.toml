@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opcp"
+version = "0.2.0"
+description = "Open Process Control Plane: own your processes, context and authority; rent capabilities from any vendor"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{ name = "Deepak Waghmare" }, { name = "Shaad Sufi" }]
+keywords = ["process", "vendor-lock-in", "concentration-risk", "exit-planning", "dora", "third-party-risk", "ai-agents", "governance"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+]
+dependencies = ["pyyaml>=6", "jsonschema>=4.18"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+opcp = "opcp.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["opcp"]
+artifacts = ["opcp/form_template.html"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"schema" = "opcp/_data/schema"
+"catalogue" = "opcp/_data/catalogue"
+"examples" = "opcp/_data/examples"
+"questions" = "opcp/_data/questions"
+"references" = "opcp/_data/references"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

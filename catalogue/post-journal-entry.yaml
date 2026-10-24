@@ -1,0 +1,43 @@
+# Capability contract: post a journal entry to a ledger.
+opcp_version: "0.1"
+id: post-journal-entry
+version: 1.0.0
+name: Post journal entry
+archetype: transact
+description: Posts a balanced journal entry to the general ledger and returns a receipt.
+rclass: R2            # Cannot be deleted, but a reversing entry compensates it.
+data_classification: internal
+evidence_required: true
+input:
+  type: object
+  required: [entry_date, currency, lines]
+  properties:
+    entry_date: {type: string, format: date}
+    currency: {type: string, pattern: "^[A-Z]{3}$"}
+    memo: {type: string}
+    lines:
+      type: array
+      minItems: 2
+      items:
+        type: object
+        required: [account, debit, credit]
+        properties:
+          account: {type: string}
+          debit: {type: number, minimum: 0}
+          credit: {type: number, minimum: 0}
+output:
+  type: object
+  required: [receipt_id, status, compensation]
+  properties:
+    receipt_id: {type: string}
+    status: {enum: [completed, pending, failed]}
+    compensation: {type: string}
+examples:
+  - name: Accrual
+    input:
+      entry_date: "2026-10-31"
+      currency: SGD
+      memo: October accrual
+      lines:
+        - {account: "6100", debit: 1200.0, credit: 0}
+        - {account: "2100", debit: 0, credit: 1200.0}

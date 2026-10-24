@@ -1,0 +1,29 @@
+# Capability contract: a person reviews an identity case that automated checks could not decide.
+opcp_version: "0.1"
+id: review-identity-exception
+version: 1.0.0
+name: Review identity exception
+archetype: human_task
+description: A trained reviewer decides an identity case referred by automated checks, within an SLA.
+rclass: R0
+data_classification: confidential
+evidence_required: true
+service_level:
+  latency_ms_p95: 14400000   # 4 hours
+input:
+  type: object
+  required: [case_ref, referral_reason]
+  properties:
+    case_ref: {type: string}
+    referral_reason: {type: string}
+    prior_checks: {type: array, items: {type: object}}
+output:
+  type: object
+  required: [outcome, assignee_role, completed_at]
+  properties:
+    outcome: {enum: [pass, fail, request_more_information]}
+    assignee_role: {type: string}
+    completed_at: {type: string, format: date-time}
+examples:
+  - name: Low-confidence match
+    input: {case_ref: IDV-2026-000981, referral_reason: low_confidence}

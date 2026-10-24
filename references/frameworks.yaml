@@ -1,0 +1,191 @@
+# Regulations, supervisory guidelines and standards the question bank relates to.
+#
+# Locators cited in the question bank were checked on 2026-10-24 against the text named in
+# `verified_via`, and a second reviewer spot-checked about 45 of them. Where an official site would
+# not serve the text, a mirror or summary was used and that is stated; some locators are marked as
+# still to be confirmed by hand. Check every locator against the official text before relying on it.
+#
+# A reference means "this obligation or principle is relevant to the question". It never means a
+# firm that answers well complies with it.
+
+sources:
+  # ---------------------------------------------------------------- regulation
+  - id: dora
+    short: DORA
+    title: "Regulation (EU) 2022/2554 on digital operational resilience for the financial sector (DORA)"
+    publisher: European Parliament and Council
+    date: "2022-12-14"
+    jurisdiction: EU
+    type: regulation
+    status: in force
+    url: https://eur-lex.europa.eu/eli/reg/2022/2554/oj
+    verified_via: "Articles 5, 8 and 28-30 read on an unofficial mirror (digital-operational-resilience-act.com), checked against EUR-Lex where EUR-Lex loaded."
+
+  - id: dora-rts-2024-1773
+    short: DORA RTS 2024/1773
+    title: "Commission Delegated Regulation (EU) 2024/1773 on the policy for ICT services supporting critical or important functions"
+    publisher: European Commission
+    date: "2024-03-13"
+    jurisdiction: EU
+    type: regulation
+    status: in force
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32024R1773
+    verified_via: EUR-Lex text.
+
+  - id: eu-data-act
+    short: EU Data Act
+    title: "Regulation (EU) 2023/2854 (Data Act), Chapter VI: switching between data processing services"
+    publisher: European Parliament and Council
+    date: "2023-12-13"
+    jurisdiction: EU
+    type: regulation
+    status: in force
+    url: https://eur-lex.europa.eu/eli/reg/2023/2854/oj
+    verified_via: "Articles 23-30 read on an unofficial mirror (eu-data-act.com); EUR-Lex served only the recitals."
+
+  - id: eba-gl-2019-02
+    short: EBA GL/2019/02
+    title: Guidelines on outsourcing arrangements (EBA/GL/2019/02)
+    publisher: European Banking Authority
+    date: "2019-02-25"
+    jurisdiction: EU
+    type: guideline
+    status: in force (comply or explain)
+    url: https://www.eba.europa.eu/sites/default/files/documents/10180/2551996/38c80601-f5d7-4855-8ba3-702423665479/EBA%20revised%20Guidelines%20on%20outsourcing%20arrangements.pdf
+    verified_via: EBA PDF.
+
+  - id: apra-cps-230
+    short: APRA CPS 230
+    title: Prudential Standard CPS 230 Operational Risk Management (Determination No. 1 of 2026)
+    publisher: Australian Prudential Regulation Authority
+    date: "2026-04-29"
+    jurisdiction: AU
+    type: regulation
+    status: "in force (this version commences 2026-07-01)"
+    url: https://www.legislation.gov.au/F2026L00475/asmade/2026-04-29/text/original/epub/OEBPS/document_1/document_1.html
+    verified_via: Federal Register of Legislation text.
+
+  - id: mas-notice-658
+    short: MAS Notice 658
+    title: MAS Notice 658 Management of Outsourced Relevant Services for Banks
+    publisher: Monetary Authority of Singapore
+    date: "2023-12-11"
+    jurisdiction: SG
+    type: regulation
+    status: "in force (effective 2024-12-11)"
+    url: https://www.mas.gov.sg/-/media/mas-media-library/regulation/notices/bd/notice-658/mas-notice-658---4.pdf
+    verified_via: MAS PDF.
+
+  - id: mas-tprm-cp-2026
+    short: MAS TPRM (proposed)
+    title: Consultation Paper on Proposed Guidelines on Third-Party Risk Management (P004-2026)
+    publisher: Monetary Authority of Singapore
+    date: "2026-03-06"
+    jurisdiction: SG
+    type: proposed guideline
+    status: proposed; consultation closed 2026-04-20
+    url: https://www.mas.gov.sg/publications/consultations/1/consultation-paper-on-proposed-guidelines-on-third-party-risk-management
+    verified_via: "Law-firm summaries (Allen & Gledhill, Herbert Smith Freehills Kramer, Rajah & Tann); the consultation PDF could not be fetched, so no paragraph numbers are cited."
+
+  - id: pra-ss2-21
+    short: PRA SS2/21
+    title: Supervisory Statement SS2/21 Outsourcing and third party risk management
+    publisher: Bank of England, Prudential Regulation Authority
+    date: "2021-03"
+    jurisdiction: UK
+    type: guideline
+    status: in force (Rulebook version of 2024-12-31)
+    url: https://www.prarulebook.co.uk/guidance/supervisory-statements/ss02-21-outsourcing-and-third-party-risk-management
+    verified_via: "Chapters 4-5 on the current Rulebook page. Chapters 6, 8 and 10 from the March 2021 PDF, which the Rulebook has since updated: confirm those paragraph numbers against the current version."
+
+  # ---------------------------------------------------------------- international principles
+  - id: fsb-tprm-2023
+    short: FSB toolkit
+    title: "Enhancing Third-Party Risk Management and Oversight: A toolkit for financial institutions and financial authorities"
+    publisher: Financial Stability Board
+    date: "2023-12-04"
+    jurisdiction: International
+    type: principles
+    status: final (non-binding)
+    url: https://www.fsb.org/uploads/P041223-1.pdf
+    verified_via: FSB PDF.
+
+  - id: bcbs-tpr-2025
+    short: BCBS 2025
+    title: Principles for the sound management of third-party risk
+    publisher: Basel Committee on Banking Supervision
+    date: "2025-12-10"
+    jurisdiction: International
+    type: principles
+    status: final
+    url: https://www.bis.org/publications/202512-guidelines-principles-sound-management-third-party-risk.pdf
+    verified_via: "BIS PDF; paragraph numbers taken from an extraction of the PDF and to be checked by hand."
+
+  - id: bcbs-opres-2021
+    short: BCBS 2021
+    title: Principles for Operational Resilience
+    publisher: Basel Committee on Banking Supervision
+    date: "2021-03-31"
+    jurisdiction: International
+    type: principles
+    status: final
+    url: https://www.bis.org/publications/202103-guidelines-principles-operational-resilience.pdf
+    verified_via: BIS PDF.
+
+  - id: iosco-2021
+    short: IOSCO 2021
+    title: Principles on Outsourcing (FR07/2021)
+    publisher: International Organization of Securities Commissions
+    date: "2021-10"
+    jurisdiction: International
+    type: principles
+    status: final
+    url: https://www.iosco.org/library/pubdocs/pdf/IOSCOPD687.pdf
+    verified_via: IOSCO PDF.
+
+  # ---------------------------------------------------------------- standards
+  - id: nist-csf-2
+    short: NIST CSF 2.0
+    title: The NIST Cybersecurity Framework 2.0 (CSWP 29)
+    publisher: National Institute of Standards and Technology
+    date: "2024-02-26"
+    jurisdiction: International
+    type: standard
+    status: final
+    url: https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf
+    verified_via: NIST PDF.
+
+  - id: nist-sp-800-161r1
+    short: NIST SP 800-161r1
+    title: Cybersecurity Supply Chain Risk Management Practices for Systems and Organizations (Rev. 1, update 1)
+    publisher: National Institute of Standards and Technology
+    date: "2024-11-01"
+    jurisdiction: International
+    type: standard
+    status: final
+    url: https://csrc.nist.gov/pubs/sp/800/161/r1/upd1/final
+    verified_via: NIST publication; main text sections only (appendix controls not verified).
+
+
+  - id: csa-ccm-4
+    short: CSA CCM v4.1
+    title: Cloud Controls Matrix v4.1
+    publisher: Cloud Security Alliance
+    date: "2026-01-27"
+    jurisdiction: International
+    type: standard
+    status: current
+    url: https://cloudsecurityalliance.org/research/cloud-controls-matrix
+    verified_via: "CSA pages. Cited by control ID only: CSA's licence restricts reuse of its wording in products."
+
+# Concentration is assessed across processes, not by a single question.
+portfolio_refs:
+  - {source: dora, at: "Art. 28(4), 29(1)"}
+  - {source: dora-rts-2024-1773, at: "Art. 1(h), 5(2)(i)"}
+  - {source: eba-gl-2019-02, at: "paras 66, 103"}
+  - {source: apra-cps-230, at: "para 52(b)"}
+  - {source: pra-ss2-21, at: "para 5.24"}
+  - {source: fsb-tprm-2023, at: "section 3.8"}
+  - {source: iosco-2021, at: "Principle 5"}
+  - {source: bcbs-tpr-2025, at: "para 23"}
+  - {source: mas-tprm-cp-2026, at: "concentration risk (proposed)"}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:opcp:schema:0.1:route",
+  "title": "OPCP route",
+  "type": "object",
+  "required": ["opcp_version", "capability", "version", "mode", "authored_by", "approved_by", "candidates"],
+  "additionalProperties": false,
+  "properties": {
+    "opcp_version": {"const": "0.1"},
+    "capability": {"type": "string"},
+    "version": {"type": "integer", "minimum": 1},
+    "mode": {"enum": ["pinned", "segmented", "cascade", "weighted", "best_score"]},
+    "critical": {"type": "boolean", "default": false},
+    "authored_by": {"type": "string", "minLength": 1, "description": "Person who wrote this route version (maker)."},
+    "approved_by": {"type": "string", "minLength": 1, "description": "Second person who approved this route version (maker-checker)."},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Supplier adapter ids in preference order. For pinned and cascade modes the first is primary.",
+      "items": {"type": "string"}
+    },
+    "segments": {
+      "type": "object",
+      "description": "segmented mode: segment value -> ordered candidate list",
+      "additionalProperties": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+    },
+    "weights": {
+      "type": "object",
+      "description": "weighted mode: candidate -> weight",
+      "additionalProperties": {"type": "number", "exclusiveMinimum": 0}
+    },
+    "cascade_min_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "selection_weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "quality": {"type": "number", "minimum": 0},
+        "cost": {"type": "number", "minimum": 0},
+        "latency": {"type": "number", "minimum": 0}
+      }
+    },
+    "escalation": {"type": "string", "description": "Adapter id of a supplier, normally a human team, that fulfils the same contract and receives requests no other candidate could serve or decide confidently."},
+    "concentration_exception": {"type": "string", "description": "Reference to an approved exception, if this route breaches the concentration limit."}
+  },
+  "allOf": [
+    {"if": {"properties": {"mode": {"const": "segmented"}}}, "then": {"required": ["segments"]}},
+    {"if": {"properties": {"mode": {"const": "weighted"}}}, "then": {"required": ["weights"]}},
+    {"if": {"properties": {"mode": {"const": "cascade"}}}, "then": {"required": ["cascade_min_confidence"]}}
+  ]
+}

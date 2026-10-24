@@ -1,0 +1,413 @@
+# OPCP Exit-Readiness question bank
+#
+# The standard way to collect scorecard inputs. Every channel (the offline form, a spreadsheet,
+# a workshop interview, an API) asks these questions with these exact words and options, so
+# answers are comparable across processes, firms and years.
+#
+# Rules for editing:
+#   - A question ID never changes meaning. Rewording that changes meaning needs a new ID.
+#   - Options are closed and anchored: each says precisely what qualifies.
+#   - Every framework reference must cite a locator in a source listed in references.yaml.
+
+bank: opcp-exit-readiness
+bank_version: "0.2"
+title: Exit-Readiness question bank
+licence: Apache-2.0
+
+evidence_levels:
+  declared:
+    label: Declared
+    meaning: Someone with knowledge of the process states it. No supporting record is attached.
+  documented:
+    label: Documented
+    meaning: A record supports the answer, such as a contract clause, configuration export, register entry or written procedure. The record is named in the answer.
+  tested:
+    label: Tested
+    meaning: The answer was demonstrated in practice within the last 12 months, such as a completed data export loaded elsewhere, or a swap drill.
+
+roles:
+  process_owner: Process owner (business or operations)
+  procurement_legal: Procurement or legal
+  technology: Technology or architecture
+  risk: Risk or compliance (second line)
+
+sections:
+  - id: triage
+    title: Is this process critical?
+    intro: Answer these first. A process is critical if any answer is Yes, and only critical processes need the full assessment.
+  - id: logic
+    title: Who owns the process logic?
+  - id: context
+    title: Can what the process has learned leave with you?
+  - id: authority
+    title: Who controls automated actions?
+  - id: dependency
+    title: How dependent are you on this supplier?
+  - id: contract
+    title: What does the contract allow when you leave?
+  - id: exit
+    title: How long would a switch take?
+  - id: baseline
+    title: How does the process perform today? (optional)
+    intro: These figures do not affect the rating. They let you show the operational value of improvements.
+
+questions:
+  # ------------------------------------------------------------------ triage
+  - id: ERS-TRI-01
+    section: triage
+    role: process_owner
+    ask: If this process stopped for one business day, would customers be harmed?
+    help: Harm includes being unable to pay, receive money, access an account, or complete a regulated step such as onboarding.
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "At least some customers would be unable to complete something they rely on, or would suffer financial loss."}
+      - {value: "no", label: "No", means: "Customers would not notice, or would only be inconvenienced."}
+    feeds: triage
+    refs:
+      - {source: fsb-tprm-2023, at: "sections 1 and 2.1 (critical service)"}
+      - {source: bcbs-opres-2021, at: "para 12"}
+
+  - id: ERS-TRI-02
+    section: triage
+    role: risk
+    ask: If this process stopped for one business day, would the firm breach a legal or regulatory obligation?
+    help: Include reporting deadlines, screening obligations and customer-protection rules.
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "An obligation would be breached, or a regulator notification would be required."}
+      - {value: "no", label: "No", means: "No obligation would be breached."}
+    feeds: triage
+    refs:
+      - {source: fsb-tprm-2023, at: "sections 1 and 2.1 (critical service)"}
+      - {source: apra-cps-230, at: "paras 34-35"}
+
+  - id: ERS-TRI-03
+    section: triage
+    role: risk
+    ask: Does the firm already classify this process as critical or important for regulatory purposes?
+    help: For example, a critical or important function under DORA, a critical operation under APRA CPS 230, or a material arrangement under MAS guidelines.
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "It appears in the firm's register or policy as critical, important or material."}
+      - {value: "no", label: "No", means: "It does not."}
+    feeds: triage
+    evidence:
+      documented: Name the register or policy entry.
+
+    refs:
+      - {source: dora, at: "Art. 8(1)"}
+      - {source: eba-gl-2019-02, at: "paras 29-30"}
+      - {source: apra-cps-230, at: "paras 34-35, 48"}
+      - {source: pra-ss2-21, at: "paras 5.1-5.2"}
+      - {source: mas-notice-658, at: "para 4.1(a)"}
+      - {source: iosco-2021, at: "Precept E"}
+      - {source: bcbs-tpr-2025, at: "Principle 3"}
+      - {source: nist-csf-2, at: "GV.SC-04"}
+
+  # ------------------------------------------------------------------ logic
+
+  - id: ERS-LOG-01
+    section: logic
+    role: process_owner
+    ask: Where are the rules, thresholds and steps of this process defined?
+    type: choice
+    options:
+      - {value: owned, label: "In our own records", means: "Every rule and threshold is written in a document or repository the firm controls, and is current."}
+      - {value: shared, label: "Partly in the supplier's system", means: "Some rules or thresholds exist only in the supplier's configuration, console or model."}
+      - {value: vendor_held, label: "Mainly in the supplier's system", means: "Most rules, thresholds or decision logic exist only on the supplier's side."}
+    feeds: {field: logic_ownership}
+    evidence:
+      documented: Name the document or repository that holds the rules, with its last review date.
+      tested: A person outside the supplier rebuilt or replayed the rules from that record.
+    refs:
+      - {source: dora, at: "Art. 30(3)(f)", note: "No source requires a firm to own process logic as such; these provisions on transition, transferability and bringing services in-house depend on it."}
+      - {source: dora-rts-2024-1773, at: "Art. 1(i)"}
+      - {source: eba-gl-2019-02, at: "para 99(b)"}
+      - {source: bcbs-opres-2021, at: "Principle 4"}
+
+  - id: ERS-LOG-02
+    section: logic
+    role: technology
+    ask: Could you hand a complete, current set of these rules to another supplier within 10 working days?
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "The full set can be exported or copied from our own records."}
+      - {value: partly, label: "Partly", means: "Some rules would need to be reconstructed from the supplier's system or from staff knowledge."}
+      - {value: "no", label: "No", means: "We could not produce the rules without the supplier's help."}
+    feeds: consistency
+
+  # ------------------------------------------------------------------ context
+  - id: ERS-DAT-01
+    section: context
+    role: technology
+    ask: Can the process's decisions, corrections and history be exported in an open, documented format?
+    help: Include reviewer corrections, tuned settings and decision history, not just raw records.
+    type: choice
+    options:
+      - {value: exportable, label: "Yes, all of it", means: "Everything the process has learned can be exported in a documented format another system can load."}
+      - {value: partial, label: "Some of it", means: "Raw records export, but tuned settings, scores or corrections do not."}
+      - {value: trapped, label: "No", means: "Learned context cannot leave the supplier in a usable form."}
+    feeds: {field: context_residency}
+    evidence:
+      documented: Name the export specification or the contract clause that defines the export.
+      tested: An export was run in the last 12 months and loaded into another system.
+
+    refs:
+      - {source: dora, at: "Art. 28(8), 30(2)(d)"}
+      - {source: eu-data-act, at: "Art. 25(2)(e), 30(5)"}
+      - {source: fsb-tprm-2023, at: "section 3.2.2"}
+      - {source: iosco-2021, at: "Principle 2"}
+      - {source: pra-ss2-21, at: "para 10.13"}
+      - {source: csa-ccm-4, at: "IPY-04"}
+
+  # ------------------------------------------------------------------ authority
+
+  - id: ERS-AUT-01
+    section: authority
+    role: technology
+    ask: Whose permission model decides what automated actions in this process may do?
+    type: choice
+    options:
+      - {value: ours, label: "Ours", means: "Automated actions pass through the firm's own approval rules and limits, which the firm can change without the supplier."}
+      - {value: vendor, label: "The supplier's", means: "Limits and approvals are set inside the supplier's product."}
+      - {value: none, label: "No one's", means: "Automated actions are not limited by any approval rule."}
+    feeds: {field: authority}
+    evidence:
+      documented: Name the policy or configuration that sets the limits.
+      tested: An action above a limit was attempted in testing and was stopped.
+    refs:
+      - {source: dora, at: "Art. 28(1)", note: "No source sets a requirement for a firm-owned permission model; these keep responsibility, and contractual control, with the firm."}
+      - {source: nist-csf-2, at: "GV.SC-05"}
+
+  - id: ERS-AUT-02
+    section: authority
+    role: process_owner
+    ask: Can the supplier's system take an action that changes a customer's or the firm's position without the firm's approval?
+    help: For example, approve an application, move money, or send a customer message.
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "At least one such action can happen without the firm's approval."}
+      - {value: "no", label: "No", means: "Every such action needs the firm's approval or falls within limits the firm set."}
+    feeds: consistency
+
+  # ------------------------------------------------------------------ dependency
+  - id: ERS-DEP-01
+    section: dependency
+    role: technology
+    ask: List any features only this supplier provides that a replacement would have to rebuild.
+    help: For example, a proprietary risk signal, a console-only workflow, a custom-trained model or a proprietary data format. Leave empty if there are none.
+    type: list
+    feeds: {field: lock_in_dependencies}
+    evidence:
+      documented: A dependency inventory or architecture record lists them.
+      tested: A replacement was evaluated against each dependency.
+    refs:
+      - {source: dora, at: "Art. 29(1)"}
+      - {source: dora-rts-2024-1773, at: "Art. 1(i)"}
+      - {source: eu-data-act, at: "Art. 23"}
+      - {source: eba-gl-2019-02, at: "para 31(h)"}
+      - {source: pra-ss2-21, at: "para 5.24"}
+      - {source: bcbs-opres-2021, at: "Principle 5"}
+      - {source: nist-sp-800-161r1, at: "section 2.3.3"}
+
+  - id: ERS-DEP-02
+    section: dependency
+    role: procurement_legal
+    ask: Which alternative supplier could take over this process?
+    help: Count a supplier only if it has passed your due diligence for this kind of service. Leave empty if there is none.
+    type: text
+    feeds: {field: fallback_supplier}
+    evidence:
+      documented: The alternative appears in the third-party register as approved for this service.
+      tested: The alternative ran in a shadow test or swap drill.
+
+    refs:
+      - {source: dora, at: "Art. 28(8), 29(1)"}
+      - {source: eba-gl-2019-02, at: "paras 106-107"}
+      - {source: pra-ss2-21, at: "paras 5.18, 10.13"}
+      - {source: fsb-tprm-2023, at: "section 3.8"}
+      - {source: iosco-2021, at: "Principles 1 and 5"}
+      - {source: bcbs-tpr-2025, at: "Principle 4"}
+
+  # ------------------------------------------------------------------ contract
+
+  - id: ERS-CON-01
+    section: contract
+    role: procurement_legal
+    ask: Does the contract require the supplier to return your data, in a usable format, when the contract ends?
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "A clause requires return of the firm's data in a stated or usable format."}
+      - {value: "no", label: "No", means: "There is no such clause, or it does not specify a usable format."}
+    feeds: {field: contract.data_return}
+    evidence:
+      documented: Cite the clause number.
+    refs:
+      - {source: dora, at: "Art. 30(2)(d)"}
+      - {source: eu-data-act, at: "Art. 25(2)(g)"}
+      - {source: iosco-2021, at: "Principle 7"}
+      - {source: bcbs-tpr-2025, at: "Principle 5"}
+      - {source: csa-ccm-4, at: "IPY-04"}
+
+  - id: ERS-CON-02
+    section: contract
+    role: procurement_legal
+    ask: Does the contract require the supplier to help you move to another supplier?
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "A clause requires termination or transition assistance for a defined period."}
+      - {value: "no", label: "No", means: "There is no such obligation."}
+    feeds: {field: contract.termination_assistance}
+    evidence:
+      documented: Cite the clause number.
+    refs:
+      - {source: dora, at: "Art. 30(3)(f)"}
+      - {source: eba-gl-2019-02, at: "para 99(b)"}
+      - {source: pra-ss2-21, at: "para 10.16"}
+      - {source: iosco-2021, at: "Principle 7"}
+      - {source: nist-csf-2, at: "GV.SC-10"}
+
+  - id: ERS-CON-03
+    section: contract
+    role: procurement_legal
+    ask: How many days' notice must the firm give to end the contract?
+    type: number
+    unit: days
+    feeds: {field: contract.notice_days}
+    evidence:
+      documented: Cite the clause number.
+    refs:
+      - {source: dora, at: "Art. 30(2)(h)"}
+      - {source: eu-data-act, at: "Art. 25(2)(d)", note: "For cloud and other data processing services, the notice to start switching may not exceed two months."}
+      - {source: apra-cps-230, at: "para 53(g)", note: "Termination rights; no notice period specified."}
+      - {source: mas-notice-658, at: "para 7.1(g)"}
+      - {source: eba-gl-2019-02, at: "para 75(b)"}
+      - {source: iosco-2021, at: "Principle 7"}
+
+  - id: ERS-CON-04
+    section: contract
+    role: procurement_legal
+    ask: Can the firm end the contract if a regulator directs it to?
+    type: choice
+    options:
+      - {value: "yes", label: "Yes", means: "A clause allows termination when a supervisory authority requires it."}
+      - {value: "no", label: "No", means: "There is no such right."}
+    feeds: {field: contract.regulator_termination}
+    evidence:
+      documented: Cite the clause number.
+    refs:
+      - {source: mas-notice-658, at: "para 7.1(g)(ii)", note: "Termination if directed by MAS."}
+      - {source: eba-gl-2019-02, at: "para 98(e)"}
+      - {source: dora, at: "Art. 28(7)(d)", note: "Termination where the competent authority can no longer effectively supervise the entity."}
+      - {source: mas-tprm-cp-2026, at: "termination (proposed)", note: "Proposed guidance on circumstances in which MAS may direct termination."}
+
+  - id: ERS-CON-05
+    section: contract
+    role: procurement_legal
+    ask: When does the current contract term end?
+    type: date
+    required: false
+    feeds: {field: contract.end_date}
+
+  # ------------------------------------------------------------------ exit
+  - id: ERS-EXT-01
+    section: exit
+    role: procurement_legal
+    ask: How many days would due diligence and a contract with a new supplier take?
+    type: number
+    unit: days
+    feeds: {field: time_to_swap.contracting_days}
+    refs:
+      - {source: dora, at: "Art. 28(8)"}
+      - {source: eba-gl-2019-02, at: "para 108(b)"}
+      - {source: bcbs-tpr-2025, at: "Principle 9"}
+
+  - id: ERS-EXT-02
+    section: exit
+    role: risk
+    ask: How many days would security review, onboarding and any regulator notification take?
+    type: number
+    unit: days
+    feeds: {field: time_to_swap.onboarding_days}
+    refs:
+      - {source: dora, at: "Art. 28(8)"}
+      - {source: eba-gl-2019-02, at: "para 108(b)"}
+
+  - id: ERS-EXT-03
+    section: exit
+    role: technology
+    ask: How many days would the technical switch, data migration and testing take?
+    type: number
+    unit: days
+    feeds: {field: time_to_swap.cutover_days}
+    refs:
+      - {source: dora, at: "Art. 28(8), 30(3)(f)"}
+      - {source: eu-data-act, at: "Art. 25(2)(a), 25(4)"}
+      - {source: dora-rts-2024-1773, at: "Art. 10"}
+      - {source: pra-ss2-21, at: "para 10.13"}
+
+  - id: ERS-EXT-04
+    section: exit
+    role: risk
+    ask: When was a switch to an alternative supplier last rehearsed end to end?
+    help: Leave empty if it has never been rehearsed. A rehearsal is a swap drill, a shadow run or a stressed-exit test.
+    type: date
+    required: false
+    feeds: {field: time_to_swap.drill_date}
+    evidence:
+      documented: Name the drill report.
+      tested: The drill report records the elapsed days of each phase.
+
+    refs:
+      - {source: dora, at: "Art. 28(8)"}
+      - {source: dora-rts-2024-1773, at: "Art. 10"}
+      - {source: eba-gl-2019-02, at: "paras 106-107"}
+      - {source: pra-ss2-21, at: "paras 10.18-10.19"}
+      - {source: apra-cps-230, at: "paras 42-44, 55(c)-(d)"}
+      - {source: iosco-2021, at: "Principle 3"}
+      - {source: bcbs-tpr-2025, at: "Principle 9"}
+      - {source: nist-csf-2, at: "GV.SC-10"}
+
+  # ------------------------------------------------------------------ baseline
+
+  - id: ERS-OPS-01
+    section: baseline
+    role: process_owner
+    ask: How many hours does a typical case take from start to finish?
+    type: number
+    unit: hours
+    required: false
+    feeds: {field: baseline.cycle_time_hours}
+
+  - id: ERS-OPS-02
+    section: baseline
+    role: process_owner
+    ask: What share of cases complete with no manual handling?
+    type: percent
+    required: false
+    feeds: {field: baseline.straight_through_rate}
+
+  - id: ERS-OPS-03
+    section: baseline
+    role: process_owner
+    ask: What share of cases become exceptions needing a person?
+    type: percent
+    required: false
+    feeds: {field: baseline.exception_rate}
+
+consistency:
+  - id: ERS-CHK-01
+    when: {ERS-LOG-01: owned, ERS-LOG-02: ["no", partly]}
+    says: The rules are said to be in your own records, but could not be handed over in full. Check whether the records are complete and current.
+  - id: ERS-CHK-02
+    when: {ERS-DAT-01: exportable, ERS-CON-01: "no"}
+    says: Data can be exported today, but the contract does not require it. That ability may not survive a dispute or a termination.
+  - id: ERS-CHK-03
+    when: {ERS-AUT-01: ours, ERS-AUT-02: "yes"}
+    says: Automated actions are said to follow your own rules, but the supplier can still act without approval. Check which actions bypass your limits.
+  - id: ERS-CHK-04
+    when: {ERS-EXT-04: present, ERS-DEP-02: absent}
+    says: A switch is recorded as rehearsed, but no alternative supplier is named. Check what the rehearsal switched to.
+  - id: ERS-CHK-05
+    when: {ERS-DEP-02: present, ERS-EXT-01: {above: 60}}
+    says: An alternative supplier is named, yet contracting would take over 60 days. If the alternative is already approved, contracting may be faster; if not, it may not be a real fallback.

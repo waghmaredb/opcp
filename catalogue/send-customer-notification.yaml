@@ -1,0 +1,27 @@
+# Capability contract: deliver a templated message to a customer.
+opcp_version: "0.1"
+id: send-customer-notification
+version: 1.0.0
+name: Send customer notification
+archetype: notify
+description: Delivers an approved message template to a customer over a chosen channel.
+rclass: R4            # A delivered message cannot be recalled (disclosure).
+data_classification: confidential
+evidence_required: true
+input:
+  type: object
+  required: [recipient_ref, channel, template_id]
+  properties:
+    recipient_ref: {type: string, description: "The business's own customer reference, not a raw address."}
+    channel: {enum: [email, sms, messaging_app]}
+    template_id: {type: string}
+    variables: {type: object, additionalProperties: true}   # Free-form template values, passed whole.
+output:
+  type: object
+  required: [message_id, delivery_status]
+  properties:
+    message_id: {type: string}
+    delivery_status: {enum: [queued, sent, delivered, failed]}
+examples:
+  - name: Onboarding complete
+    input: {recipient_ref: CUST-000123, channel: email, template_id: onboarding-complete-v2, variables: {first_name: Alex}}

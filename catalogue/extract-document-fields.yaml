@@ -1,0 +1,31 @@
+# Capability contract: extract structured fields from a business document.
+opcp_version: "0.1"
+id: extract-document-fields
+version: 1.0.0
+name: Extract document fields
+archetype: extract
+description: Reads a document the business holds and returns its fields with a confidence for each.
+rclass: R0
+data_classification: confidential
+evidence_required: false
+service_level:
+  latency_ms_p95: 10000
+input:
+  type: object
+  required: [document_ref, document_type]
+  properties:
+    document_ref: {type: string, description: "Reference to a document in the business's own store."}
+    document_type: {enum: [invoice, bank_statement, payslip, utility_bill]}
+output:
+  type: object
+  required: [fields, field_confidence]
+  properties:
+    fields: {type: object}
+    field_confidence:
+      type: object
+      additionalProperties: {type: number, minimum: 0, maximum: 1}
+mappings:
+  apqc_pcf: null
+examples:
+  - name: Supplier invoice
+    input: {document_ref: "docstore://invoices/2026/10/INV-0042.pdf", document_type: invoice}

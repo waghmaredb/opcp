@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:opcp:schema:0.1:answers",
+  "title": "OPCP answers file",
+  "description": "Answers to an OPCP question bank, by question ID, with the evidence behind each.",
+  "type": "object",
+  "required": ["answers_version", "bank", "bank_version", "organisation", "processes"],
+  "additionalProperties": false,
+  "properties": {
+    "answers_version": {"const": "0.1"},
+    "bank": {"type": "string"},
+    "bank_version": {"type": "string"},
+    "organisation": {"type": "string", "minLength": 1},
+    "assessment_date": {"type": "string", "format": "date"},
+    "prepared_by": {"$ref": "#/$defs/person"},
+    "reviewed_by": {"$ref": "#/$defs/person"},
+    "settings": {"type": "object"},
+    "processes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "supplier", "answers"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+          "name": {"type": "string", "minLength": 1},
+          "owner": {"type": "string"},
+          "supplier": {"type": "string", "minLength": 1},
+          "capability": {"type": "string"},
+          "archetype": {"enum": ["check", "extract", "generate", "transact", "retrieve", "notify", "human_task"]},
+          "notes": {"type": "string"},
+          "answers": {
+            "type": "object",
+            "propertyNames": {"pattern": "^ERS-[A-Z]{3}-[0-9]{2}$"},
+            "additionalProperties": {
+              "type": "object",
+              "required": ["value"],
+              "additionalProperties": false,
+              "properties": {
+                "value": {},
+                "evidence": {"enum": ["declared", "documented", "tested"]},
+                "ref": {"type": "string"},
+                "answered_by": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "person": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {"name": {"type": "string"}, "role": {"type": "string"}, "date": {"type": "string", "format": "date"}}
+    }
+  }
+}

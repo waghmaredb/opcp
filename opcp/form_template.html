@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exit-Readiness Assessment</title>
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--ink:#1d1d1b;--muted:#5f5f5a;--line:#e3e2dd;--accent:#2952cc;--accent-bg:#eaf0ff;
+--ok:#1f7a4d;--warn:#8a5a00;--warn-bg:#fbf0d9;--bad:#b42318}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--card:#1f1f1d;--ink:#ecebe6;--muted:#a3a29b;--line:#34332f;
+--accent:#8aa6ff;--accent-bg:#1d2747;--ok:#5fc794;--warn:#e6b85c;--warn-bg:#3a2d10;--bad:#f2867c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:28px 16px 80px}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:18px;margin:28px 0 10px}h3{font-size:16px;margin:0 0 6px}
+.muted{color:var(--muted)}.small{font-size:13px}
+.pill{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+textarea{min-height:84px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.row{grid-template-columns:1fr}}
+button{font:inherit;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.link{border:none;background:none;color:var(--accent);padding:4px 0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{border-radius:999px}.tab.on{background:var(--accent-bg);border-color:var(--accent);color:var(--ink)}
+.q{border-top:1px solid var(--line);padding:14px 0}
+.q:first-of-type{border-top:none}
+.qhead{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.qid{font-size:11px;color:var(--muted);font-family:ui-monospace,Menlo,monospace}
+.ask{font-weight:600;margin:2px 0 4px}
+.opts{display:grid;gap:8px;margin-top:8px}
+.opt{display:block;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.opt input{margin-right:8px}
+.opt.on{border-color:var(--accent);background:var(--accent-bg)}
+.opt .means{display:block;font-size:13px;color:var(--muted);margin:2px 0 0 24px}
+.ev{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.ev button{font-size:13px;padding:4px 10px;border-radius:999px}
+.ev button.on{background:var(--accent-bg);border-color:var(--accent)}
+.hint{font-size:12px;color:var(--muted);margin-top:4px}
+details.sec{border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:10px}
+details.sec>summary{padding:14px 16px;cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec .body{padding:0 16px 8px}
+.done{color:var(--ok);font-size:13px;font-weight:600}.todo{color:var(--muted);font-size:13px}
+.flag{border-left:3px solid var(--warn);background:var(--warn-bg);padding:8px 12px;border-radius:6px;margin-top:8px;font-size:14px}
+.bar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.privacy{font-size:13px;color:var(--muted);margin-top:6px}
+.err{color:var(--bad);font-size:13px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <div class="small muted">Open Process Control Plane</div>
+  <h1>Exit-Readiness Assessment</h1>
+  <div class="privacy">This page works offline. Nothing you type leaves this device; progress is kept in this browser until you download it.</div>
+
+  <h2>About this assessment</h2>
+  <div class="card">
+    <div class="row">
+      <div><label class="f" for="org">Organisation</label><input type="text" id="org"></div>
+      <div><label class="f" for="adate">Assessment date</label><input type="date" id="adate"></div>
+    </div>
+    <div class="row">
+      <div><label class="f" for="pname">Prepared by</label><input type="text" id="pname" placeholder="Name"></div>
+      <div><label class="f" for="prole">Role</label><input type="text" id="prole" placeholder="e.g. Third-Party Risk Office"></div>
+    </div>
+    <details style="margin-top:12px"><summary class="small">Independent review (second line) and tolerances</summary>
+      <div class="row">
+        <div><label class="f" for="rname">Reviewed by</label><input type="text" id="rname" placeholder="Leave empty if not yet reviewed"></div>
+        <div><label class="f" for="rrole">Reviewer role</label><input type="text" id="rrole"></div>
+      </div>
+      <label class="f" for="rdate">Review date</label><input type="date" id="rdate">
+      <div class="row">
+        <div><label class="f" for="t1">Longest acceptable time-to-swap (days)</label><input type="number" id="t1" min="1"></div>
+        <div><label class="f" for="t2">Longest acceptable notice period (days)</label><input type="number" id="t2" min="0"></div>
+      </div>
+      <div class="row">
+        <div><label class="f" for="t3">Concentration limit (% of critical processes per supplier)</label><input type="number" id="t3" min="1" max="100"></div>
+        <div><label class="f" for="t4">Supplier-only dependencies allowed before "Locked"</label><input type="number" id="t4" min="0"></div>
+      </div>
+    </details>
+  </div>
+
+  <h2>Processes</h2>
+  <div class="tabs" id="tabs"></div>
+  <div id="newproc" class="card">
+    <h3>Add a process</h3>
+    <div class="row">
+      <div><label class="f" for="nname">Process name</label><input type="text" id="nname" placeholder="e.g. Customer onboarding, identity verification"></div>
+      <div><label class="f" for="nsupp">Current supplier</label><input type="text" id="nsupp"></div>
+    </div>
+    <label class="f" for="nowner">Process owner</label><input type="text" id="nowner" placeholder="e.g. Head of Retail Operations">
+    <p class="err" id="nerr"></p>
+    <button class="primary" id="addbtn">Add process</button>
+  </div>
+  <div id="panel"></div>
+</main>
+<div class="bar">
+  <button class="primary" id="dl">Download answers file</button>
+  <button id="loadbtn">Open answers file</button>
+  <input type="file" id="loadfile" accept=".json,application/json" hidden>
+</div>
+<script type="application/json" id="bank-data">/*BANK_JSON*/</script>
+<script>
+(function () {
+  "use strict";
+  var BANK = JSON.parse(document.getElementById("bank-data").textContent);
+  var KEY = "opcp-answers-" + BANK.bank + "-" + BANK.bank_version;
+  var today = new Date().toISOString().slice(0, 10);
+  var state = load() || {answers_version: "0.1", bank: BANK.bank, bank_version: BANK.bank_version, organisation: "",
+    assessment_date: today, prepared_by: {name: "", role: ""}, reviewed_by: {name: "", role: "", date: ""},
+    settings: {swap_tolerance_days: 90, notice_tolerance_days: 90, concentration_limit: 0.5, lock_in_debt_partial_max: 3},
+    processes: []};
+  var active = 0;
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable: keep working in memory */ } }
+  function load() { try { var t = localStorage.getItem(KEY); return t ? JSON.parse(t) : null; } catch (e) { return null; } }
+  function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "process"; }
+  function uniqueId(base) { var id = base, n = 2; while (state.processes.some(function (p) { return p.id === id; })) { id = base + "-" + n++; } return id; }
+
+  // ---------------------------------------------------------------- header fields
+  function bindHeader() {
+    var map = [["org", function (v) { state.organisation = v; }, state.organisation],
+      ["adate", function (v) { state.assessment_date = v; }, state.assessment_date],
+      ["pname", function (v) { state.prepared_by.name = v; }, state.prepared_by.name],
+      ["prole", function (v) { state.prepared_by.role = v; }, state.prepared_by.role],
+      ["rname", function (v) { state.reviewed_by.name = v; }, state.reviewed_by.name],
+      ["rrole", function (v) { state.reviewed_by.role = v; }, state.reviewed_by.role],
+      ["rdate", function (v) { state.reviewed_by.date = v; }, state.reviewed_by.date],
+      ["t1", function (v) { state.settings.swap_tolerance_days = parseInt(v, 10) || 90; }, state.settings.swap_tolerance_days],
+      ["t2", function (v) { state.settings.notice_tolerance_days = parseInt(v, 10) || 0; }, state.settings.notice_tolerance_days],
+      ["t3", function (v) { state.settings.concentration_limit = Math.min(1, Math.max(0.01, (parseFloat(v) || 50) / 100)); }, Math.round(state.settings.concentration_limit * 100)],
+      ["t4", function (v) { state.settings.lock_in_debt_partial_max = parseInt(v, 10) || 0; }, state.settings.lock_in_debt_partial_max]];
+    map.forEach(function (m) {
+      var el = $(m[0]); el.value = m[2] == null ? "" : m[2];
+      el.addEventListener("input", function () { m[1](el.value); save(); });
+    });
+  }
+
+  // ---------------------------------------------------------------- answers helpers
+  function answer(p, qid) { return p.answers[qid]; }
+  function val(p, qid) { var a = p.answers[qid]; return a ? a.value : undefined; }
+  function present(v) { return !(v === undefined || v === null || v === "" || (Array.isArray(v) && v.length === 0)); }
+  function setVal(p, q, v) {
+    var emptyList = q.type === "list" && Array.isArray(v);  // an empty list means "none"
+    if (!present(v) && !emptyList) { delete p.answers[q.id]; return; }
+    var a = p.answers[q.id] || {evidence: "declared"};
+    a.value = v; p.answers[q.id] = a;
+  }
+  function critical(p) { return ["ERS-TRI-01", "ERS-TRI-02", "ERS-TRI-03"].some(function (q) { return val(p, q) === "yes"; }); }
+  function triageDone(p) { return ["ERS-TRI-01", "ERS-TRI-02", "ERS-TRI-03"].every(function (q) { return present(val(p, q)); }); }
+  function ruleHolds(rule, p) {
+    return Object.keys(rule.when).every(function (qid) {
+      var c = rule.when[qid], v = val(p, qid);
+      if (c === "present") return present(v);
+      if (c === "absent") return !present(v);
+      if (Array.isArray(c)) return c.indexOf(v) >= 0;
+      if (c && typeof c === "object" && "above" in c) return typeof v === "number" && v > c.above;
+      return v === c;
+    });
+  }
+  function sectionStatus(p, sec) {
+    var qs = BANK.questions.filter(function (q) { return q.section === sec.id; });
+    var need = qs.filter(function (q) { return q.required !== false && q.type !== "list" && q.type !== "text"; });
+    var done = need.filter(function (q) { return present(val(p, q.id)); }).length;
+    var missingRef = qs.some(function (q) { var a = answer(p, q.id); return a && a.evidence !== "declared" && !a.ref; });
+    return {done: done, need: need.length, missingRef: missingRef};
+  }
+
+  // ---------------------------------------------------------------- rendering
+  function renderTabs() {
+    var html = state.processes.map(function (p, i) {
+      return '<button class="tab' + (i === active ? " on" : "") + '" data-i="' + i + '">' + esc(p.name) + "</button>";
+    }).join("");
+    $("tabs").innerHTML = html;
+    Array.prototype.forEach.call($("tabs").querySelectorAll("button"), function (b) {
+      b.addEventListener("click", function () { active = parseInt(b.getAttribute("data-i"), 10); render(); });
+    });
+  }
+
+  function questionHtml(p, q) {
+    var a = answer(p, q.id) || {}, v = a.value, html = '<div class="q" data-q="' + q.id + '">';
+    html += '<div class="qhead"><div><div class="qid">' + q.id + '</div><div class="ask">' + esc(q.ask) + '</div></div>' +
+      '<span class="pill">Ask: ' + esc(BANK.roles[q.role] || q.role) + "</span></div>";
+    if (q.help) html += '<div class="hint">' + esc(q.help) + "</div>";
+    if (q.type === "choice") {
+      html += '<div class="opts">' + q.options.map(function (o) {
+        var on = v === o.value;
+        return '<label class="opt' + (on ? " on" : "") + '"><input type="radio" name="' + q.id + '" value="' + esc(o.value) + '"' + (on ? " checked" : "") +
+          '><strong>' + esc(o.label) + '</strong><span class="means">' + esc(o.means) + "</span></label>";
+      }).join("") + "</div>";
+    } else if (q.type === "list") {
+      html += '<textarea data-kind="list" placeholder="One per line">' + esc((v || []).join("\n")) + "</textarea>";
+    } else if (q.type === "date") {
+      html += '<input type="date" data-kind="date" value="' + esc(v || "") + '">';
+    } else if (q.type === "text") {
+      html += '<input type="text" data-kind="text" value="' + esc(v || "") + '">';
+    } else {
+      html += '<input type="number" min="0"' + (q.type === "percent" ? ' max="100"' : "") + ' data-kind="' + q.type + '" value="' + esc(v == null ? "" : v) + '" placeholder="' +
+        esc(q.type === "percent" ? "%" : (q.unit || "")) + '">';
+    }
+    if (q.evidence) {
+      // Always in the page, shown once the question is answered, so nothing re-renders while typing.
+      var lv = a.evidence || "declared";
+      html += '<div class="evwrap"' + (answer(p, q.id) ? "" : " hidden") + '><div class="ev"><span class="small muted">Evidence:</span>' +
+        ["declared", "documented", "tested"].map(function (k) {
+          return '<button type="button" data-ev="' + k + '" class="' + (lv === k ? "on" : "") + '">' + esc(BANK.evidence_levels[k].label) + "</button>";
+        }).join("") + "</div>" +
+        '<div class="evref"' + (lv === "declared" ? " hidden" : "") + '><input type="text" data-kind="ref" placeholder="Name the record, e.g. contract clause 18.2" value="' +
+        esc(a.ref || "") + '"><div class="hint evhint">' + esc(lv === "declared" ? "" : (q.evidence[lv] || BANK.evidence_levels[lv].meaning)) + "</div></div></div>";
+    }
+    return html + "</div>";
+  }
+
+  function render() {
+    renderTabs();
+    var panel = $("panel");
+    if (!state.processes.length) { panel.innerHTML = '<p class="muted">Add the first process you want to assess.</p>'; return; }
+    var p = state.processes[active];
+    var html = '<div class="card"><h3>' + esc(p.name) + '</h3><div class="small muted">Owner: ' + esc(p.owner || "not set") +
+      " · Supplier: " + esc(p.supplier) + '</div><div id="status" class="small" style="margin-top:6px"></div>' +
+      '<button class="link" id="rm">Remove this process</button></div>';
+    BANK.sections.forEach(function (sec) {
+      var qs = BANK.questions.filter(function (q) { return q.section === sec.id; });
+      var hidden = sec.id !== "triage" && triageDone(p) && !critical(p);
+      html += '<details class="sec" data-sec="' + sec.id + '"' + (sec.id === "triage" || !triageDone(p) ? " open" : "") + '><summary><span>' + esc(sec.title) +
+        '</span><span class="secstat"></span></summary><div class="body">' +
+        (sec.intro ? '<p class="small muted">' + esc(sec.intro) + "</p>" : "") +
+        (hidden ? '<p class="small muted">Triage says this process is not critical, so this section is optional.</p>' : "") +
+        qs.map(function (q) { return questionHtml(p, q); }).join("") + "</div></details>";
+    });
+    html += '<div id="flags"></div>';
+    panel.innerHTML = html;
+    bindPanel(p);
+    updateStatus();
+  }
+
+  function updateStatus() {
+    if (!state.processes.length) return;
+    var p = state.processes[active];
+    var totalDone = 0, totalNeed = 0;
+    Array.prototype.forEach.call(document.querySelectorAll("details.sec"), function (d) {
+      var sec = BANK.sections.filter(function (s) { return s.id === d.getAttribute("data-sec"); })[0];
+      var st = sectionStatus(p, sec);
+      totalDone += st.done; totalNeed += st.need;
+      d.querySelector(".secstat").innerHTML = st.missingRef ? '<span class="todo">Name the record for each evidence claim</span>' :
+        (st.need === 0 ? "" : (st.done === st.need ? '<span class="done">Complete</span>' : '<span class="todo">' + st.done + " of " + st.need + "</span>"));
+    });
+    var crit = triageDone(p) ? (critical(p) ? "Critical process." : "Not critical.") : "Answer the triage questions first.";
+    $("status").textContent = crit + " " + totalDone + " of " + totalNeed + " required answers given.";
+    var flags = BANK.consistency.filter(function (r) { return ruleHolds(r, p); });
+    $("flags").innerHTML = flags.map(function (r) { return '<div class="flag"><strong>Check:</strong> ' + esc(r.says) + "</div>"; }).join("");
+  }
+
+  // Re-render while keeping the open sections open and the scroll position steady.
+  function reopen(box, fn) {
+    var open = Array.prototype.map.call(document.querySelectorAll("details.sec[open]"), function (d) { return d.getAttribute("data-sec"); });
+    var y = window.scrollY;
+    fn();
+    open.forEach(function (id) { var d = document.querySelector('details[data-sec="' + id + '"]'); if (d) { d.open = true; } });
+    window.scrollTo(0, y);
+  }
+
+  function showEvidence(box, p, q) {
+    var wrap = box.querySelector(".evwrap");
+    if (wrap) { wrap.hidden = !answer(p, q.id); }
+  }
+
+  function bindPanel(p) {
+    $("rm").addEventListener("click", function () {
+      if (!confirm("Remove " + p.name + " and its answers?")) return;
+      state.processes.splice(active, 1); active = Math.max(0, active - 1); save(); render();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".q"), function (box) {
+      var q = BANK.questions.filter(function (x) { return x.id === box.getAttribute("data-q"); })[0];
+      Array.prototype.forEach.call(box.querySelectorAll("input[type=radio]"), function (r) {
+        r.addEventListener("change", function () {
+          setVal(p, q, r.value); save();
+          Array.prototype.forEach.call(box.querySelectorAll(".opt"), function (o) { o.classList.toggle("on", o.querySelector("input").checked); });
+          showEvidence(box, p, q);
+          if (q.section === "triage") { reopen(box, function () { render(); }); } else { updateStatus(); }
+        });
+      });
+      Array.prototype.forEach.call(box.querySelectorAll("[data-kind]"), function (el) {
+        var kind = el.getAttribute("data-kind");
+        el.addEventListener("input", function () {
+          if (kind === "ref") { var a = answer(p, q.id); if (a) { a.ref = el.value; } }
+          else if (kind === "list") { setVal(p, q, el.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean)); }
+          else if (kind === "number" || kind === "percent") { setVal(p, q, el.value === "" ? undefined : Number(el.value)); }
+          else { setVal(p, q, el.value); }
+          if (kind !== "ref") { showEvidence(box, p, q); }
+          save(); updateStatus();
+        });
+      });
+      Array.prototype.forEach.call(box.querySelectorAll("[data-ev]"), function (b) {
+        b.addEventListener("click", function () {
+          var a = answer(p, q.id);
+          if (!a) { return; }
+          a.evidence = b.getAttribute("data-ev");
+          var refBox = box.querySelector(".evref"), refInput = refBox.querySelector("input");
+          if (a.evidence === "declared") { delete a.ref; refInput.value = ""; }
+          Array.prototype.forEach.call(box.querySelectorAll("[data-ev]"), function (x) { x.classList.toggle("on", x === b); });
+          refBox.hidden = a.evidence === "declared";
+          box.querySelector(".evhint").textContent = a.evidence === "declared" ? "" : (q.evidence[a.evidence] || BANK.evidence_levels[a.evidence].meaning);
+          save(); updateStatus();
+        });
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------- add, download, open
+  $("addbtn").addEventListener("click", function () {
+    var name = $("nname").value.trim(), supp = $("nsupp").value.trim();
+    if (!name || !supp) { $("nerr").textContent = "Give the process a name and its current supplier."; return; }
+    $("nerr").textContent = "";
+    state.processes.push({id: uniqueId(slug(name)), name: name, owner: $("nowner").value.trim(), supplier: supp, answers: {}});
+    active = state.processes.length - 1;
+    $("nname").value = $("nsupp").value = $("nowner").value = "";
+    save(); render();
+  });
+
+  function exportDoc() {
+    var doc = JSON.parse(JSON.stringify(state));
+    if (!doc.reviewed_by.name) { delete doc.reviewed_by; } else if (!doc.reviewed_by.date) { delete doc.reviewed_by.date; }
+    if (!doc.prepared_by.name) { delete doc.prepared_by; }
+    if (!doc.assessment_date) { delete doc.assessment_date; }
+    doc.processes.forEach(function (p) { if (!p.owner) { delete p.owner; } });
+    return doc;
+  }
+  $("dl").addEventListener("click", function () {
+    if (!state.organisation.trim()) { alert("Add the organisation name first."); $("org").focus(); return; }
+    if (!state.processes.length) { alert("Add at least one process first."); return; }
+    var blob = new Blob([JSON.stringify(exportDoc(), null, 2)], {type: "application/json"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "answers-" + slug(state.organisation) + "-" + (state.assessment_date || today) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  $("loadbtn").addEventListener("click", function () { $("loadfile").click(); });
+  $("loadfile").addEventListener("change", function () {
+    var f = $("loadfile").files[0]; if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var doc = JSON.parse(reader.result);
+        if (doc.bank !== BANK.bank) { alert("This file is for a different question bank."); return; }
+        doc.prepared_by = doc.prepared_by || {name: "", role: ""};
+        doc.reviewed_by = doc.reviewed_by || {name: "", role: "", date: ""};
+        doc.settings = Object.assign({swap_tolerance_days: 90, notice_tolerance_days: 90, concentration_limit: 0.5, lock_in_debt_partial_max: 3}, doc.settings || {});
+        state = doc; active = 0; save(); bindHeaderValues(); render();
+      } catch (e) { alert("Could not read that file. Choose a JSON answers file downloaded from this page."); }
+    };
+    reader.readAsText(f);
+  });
+  function bindHeaderValues() {
+    $("org").value = state.organisation || ""; $("adate").value = state.assessment_date || "";
+    $("pname").value = state.prepared_by.name || ""; $("prole").value = state.prepared_by.role || "";
+    $("rname").value = state.reviewed_by.name || ""; $("rrole").value = state.reviewed_by.role || ""; $("rdate").value = state.reviewed_by.date || "";
+    $("t1").value = state.settings.swap_tolerance_days; $("t2").value = state.settings.notice_tolerance_days;
+    $("t3").value = Math.round(state.settings.concentration_limit * 100); $("t4").value = state.settings.lock_in_debt_partial_max;
+  }
+
+  bindHeader();
+  render();
+})();
+</script>
+</body>
+</html>

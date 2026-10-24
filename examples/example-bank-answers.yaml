@@ -1,0 +1,102 @@
+# A hypothetical answers file for the Exit-Readiness question bank. The bank, suppliers, people
+# and every figure are invented to show the format; none of it describes a real organisation.
+answers_version: "0.1"
+bank: opcp-exit-readiness
+bank_version: "0.2"
+organisation: Example Bank (hypothetical)
+assessment_date: "2026-10-24"
+prepared_by: {name: A. Analyst, role: Third-Party Risk Office}
+reviewed_by: {name: R. Reviewer, role: Operational Risk (second line), date: "2026-10-28"}
+settings:
+  swap_tolerance_days: 90
+  notice_tolerance_days: 90
+  concentration_limit: 0.5
+  lock_in_debt_partial_max: 3
+
+processes:
+  - id: onboarding-idv
+    name: Customer onboarding, identity verification
+    owner: Head of Retail Operations
+    supplier: Vendor A (fictional)
+    capability: verify-identity
+    archetype: check
+    notes: Matching rules and escalation thresholds are configured in the vendor's console.
+    answers:
+      ERS-TRI-01: {value: "yes"}
+      ERS-TRI-02: {value: "yes"}
+      ERS-TRI-03: {value: "yes", evidence: documented, ref: "Critical functions register, entry CF-014"}
+      ERS-LOG-01: {value: vendor_held, evidence: documented, ref: "Vendor console configuration export, 2026-10-01"}
+      ERS-LOG-02: {value: "no"}
+      ERS-DAT-01: {value: partial, evidence: documented, ref: "Master services agreement, schedule 4"}
+      ERS-AUT-01: {value: vendor}
+      ERS-AUT-02: {value: "yes"}
+      ERS-DEP-01:
+        value:
+          - Proprietary risk signal (device)
+          - Proprietary risk signal (document)
+          - Console-only escalation workflow
+          - Vendor-specific data format
+        evidence: documented
+        ref: "Architecture record AR-221"
+      ERS-CON-01: {value: "yes", evidence: documented, ref: "MSA clause 18.2"}
+      ERS-CON-02: {value: "no", evidence: documented, ref: "MSA clause 18 (no assistance obligation)"}
+      ERS-CON-03: {value: 180, evidence: documented, ref: "MSA clause 17.1"}
+      ERS-CON-04: {value: "no", evidence: documented, ref: "MSA clause 17 (no regulatory termination right)"}
+      ERS-CON-05: {value: "2027-06-30", evidence: documented, ref: "MSA clause 2"}
+      ERS-EXT-01: {value: 70}
+      ERS-EXT-02: {value: 30}
+      ERS-EXT-03: {value: 20}
+      ERS-OPS-01: {value: 26}
+      ERS-OPS-02: {value: 72}
+      ERS-OPS-03: {value: 18}
+
+  - id: payments-sanctions
+    name: Payments sanctions screening
+    owner: Head of Financial Crime Compliance
+    supplier: Vendor A (fictional)
+    capability: screen-sanctions
+    archetype: check
+    answers:
+      ERS-TRI-01: {value: "yes"}
+      ERS-TRI-02: {value: "yes"}
+      ERS-TRI-03: {value: "yes", evidence: documented, ref: "Critical functions register, entry CF-009"}
+      ERS-LOG-01: {value: shared, evidence: documented, ref: "Screening rules catalogue v12"}
+      ERS-LOG-02: {value: partly}
+      ERS-DAT-01: {value: exportable, evidence: tested, ref: "Export test report, 2026-07-15"}
+      ERS-AUT-01: {value: ours, evidence: documented, ref: "Payments limits policy PL-3"}
+      ERS-AUT-02: {value: "no"}
+      ERS-DEP-01: {value: ["Vendor-maintained list enrichment"]}
+      ERS-DEP-02: {value: Vendor C (fictional), evidence: documented, ref: "Third-party register TPR-0412"}
+      ERS-CON-01: {value: "yes", evidence: documented, ref: "Agreement clause 21"}
+      ERS-CON-02: {value: "yes", evidence: documented, ref: "Agreement clause 22"}
+      ERS-CON-03: {value: 90, evidence: documented, ref: "Agreement clause 20"}
+      ERS-CON-04: {value: "yes", evidence: documented, ref: "Agreement clause 20.4"}
+      ERS-EXT-01: {value: 30}
+      ERS-EXT-02: {value: 30}
+      ERS-EXT-03: {value: 25}
+
+  - id: customer-notifications
+    name: Customer notifications
+    owner: Head of Customer Experience
+    supplier: Vendor D (fictional)
+    capability: send-customer-notification
+    archetype: notify
+    answers:
+      ERS-TRI-01: {value: "yes"}
+      ERS-TRI-02: {value: "no"}
+      ERS-TRI-03: {value: "no"}
+      ERS-LOG-01: {value: owned, evidence: tested, ref: "Template repository rebuilt in drill, 2026-08-14"}
+      ERS-LOG-02: {value: "yes"}
+      ERS-DAT-01: {value: exportable, evidence: tested, ref: "Drill report DR-2026-03"}
+      ERS-AUT-01: {value: ours, evidence: documented, ref: "Messaging policy MP-1"}
+      ERS-AUT-02: {value: "no"}
+      ERS-DEP-01: {value: []}
+      ERS-DEP-02: {value: Vendor E (fictional), evidence: tested, ref: "Drill report DR-2026-03"}
+      ERS-CON-01: {value: "yes", evidence: documented, ref: "Contract clause 12"}
+      ERS-CON-02: {value: "yes", evidence: documented, ref: "Contract clause 13"}
+      ERS-CON-03: {value: 60, evidence: documented, ref: "Contract clause 11"}
+      ERS-CON-04: {value: "yes", evidence: documented, ref: "Contract clause 11.3"}
+      ERS-EXT-01: {value: 20, evidence: tested, ref: "Drill report DR-2026-03"}
+      ERS-EXT-02: {value: 15, evidence: tested, ref: "Drill report DR-2026-03"}
+      ERS-EXT-03: {value: 10, evidence: tested, ref: "Drill report DR-2026-03"}
+      ERS-EXT-04: {value: "2026-08-14", evidence: tested, ref: "Drill report DR-2026-03"}
