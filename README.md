@@ -105,6 +105,10 @@ Deepak Waghmare and Shaad Sufi, with contributors.
 
 Operations, risk, legal and procurement expertise is as welcome as code. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Contact
+
+Questions about the project: hello@twomuchlabs.com. To report a security issue, see [SECURITY.md](SECURITY.md).
+
 ## Licence
 
 [Apache License 2.0](LICENSE). Nothing in this repository is legal or regulatory advice.

@@ -43,7 +43,7 @@ The project follows the [Contributor Covenant, version 2.1](https://www.contribu
 
 ## 7. Open items before the first public release
 
-- [ ] Security contact address for responsible disclosure
+- [x] Security contact: hello@twomuchlabs.com (see [SECURITY.md](SECURITY.md))
 - [ ] Decision on a specification-specific licence (see section 1.1)
 - [ ] Publication of the package on PyPI
 - [x] Project name: Open Process Control Plane (OPCP). Use the full name first; "OPCP" is also used by an unrelated OVHcloud product.
