@@ -44,6 +44,8 @@ If your system says `opcp` is not found, use `python -m opcp` instead, for examp
 
 Prefer a text editor? Answers files can also be written by hand in YAML; see [`examples/example-bank-answers.yaml`](examples/example-bank-answers.yaml).
 
+Running it as a pilot across several processes? [docs/PILOT.md](docs/PILOT.md) sets out a six-week plan, who answers what, and a readout agenda. [docs/SWAP-DRILL.md](docs/SWAP-DRILL.md) explains how to rehearse a supplier swap, so a time-to-swap figure becomes proven rather than estimated.
+
 ### What the report rests on, and its limits
 
 - **A standard question bank.** Every firm answers the same [22 questions](questions/exit-readiness.yaml) with the same anchored options, so results are comparable.
