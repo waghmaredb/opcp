@@ -28,14 +28,20 @@
     },
     "mappings": {
       "type": "object",
-      "description": "References to external taxonomies. Each value must cite its source, or be null.",
+      "description": "References to external taxonomies, keyed by scheme (for example apqc_pcf, bian_service_domain, iso20022). Each value must cite its source, or be null. See docs/TAXONOMIES.md.",
       "additionalProperties": {
         "oneOf": [
           {"type": "null"},
           {
             "type": "object",
             "required": ["ref", "source"],
-            "properties": {"ref": {"type": "string"}, "source": {"type": "string", "format": "uri"}}
+            "properties": {
+              "ref": {"type": "string", "minLength": 1, "description": "Identifier or name in the external scheme, such as an APQC PCF element ID or a BIAN service domain name."},
+              "source": {"type": "string", "format": "uri", "description": "Where the reference can be checked."},
+              "version": {"type": "string", "description": "Version or release of the external scheme, such as 8.0 or 14.0.0."},
+              "relation": {"enum": ["exact", "closest", "partial"], "description": "How closely this item matches the external one. Read as closest when omitted."},
+              "note": {"type": "string"}
+            }
           }
         ]
       }

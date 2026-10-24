@@ -32,6 +32,13 @@ output:
     receipt_id: {type: string}
     status: {enum: [completed, pending, failed]}
     compensation: {type: string}
+mappings:
+  apqc_pcf: null           # To map against the PCF download, with its attribution; see docs/TAXONOMIES.md.
+  bian_service_domain:
+    ref: Financial Accounting
+    version: "14.0.0"
+    relation: closest
+    source: https://github.com/bian-official/public/tree/main/release14.0.0
 examples:
   - name: Accrual
     input:

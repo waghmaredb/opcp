@@ -244,6 +244,51 @@
         },
         "notes": {
           "type": "string"
+        },
+        "mappings": {
+          "type": "object",
+          "description": "Optional references from this process to external process taxonomies, such as an APQC PCF element. Carried into the results; not rated. See docs/TAXONOMIES.md.",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "ref",
+                  "source"
+                ],
+                "properties": {
+                  "ref": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Identifier or name in the external scheme, e.g. an APQC PCF element ID or a BIAN service domain name."
+                  },
+                  "source": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Where the reference can be checked."
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Version or release of the external scheme, e.g. 8.0 or 14.0.0."
+                  },
+                  "relation": {
+                    "enum": [
+                      "exact",
+                      "closest",
+                      "partial"
+                    ],
+                    "description": "How closely the OPCP item matches the external one. Defaults to closest when omitted."
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
         }
       }
     }

@@ -30,6 +30,26 @@
           "capability": {"type": "string"},
           "archetype": {"enum": ["check", "extract", "generate", "transact", "retrieve", "notify", "human_task"]},
           "notes": {"type": "string"},
+          "mappings": {
+            "type": "object",
+            "description": "Optional references from this process to external process taxonomies, such as an APQC PCF element. Carried into the results; not rated. Same shape as a capability contract's mappings; see docs/TAXONOMIES.md.",
+            "additionalProperties": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "required": ["ref", "source"],
+                  "properties": {
+                    "ref": {"type": "string", "minLength": 1},
+                    "source": {"type": "string", "format": "uri"},
+                    "version": {"type": "string"},
+                    "relation": {"enum": ["exact", "closest", "partial"]},
+                    "note": {"type": "string"}
+                  }
+                }
+              ]
+            }
+          },
           "answers": {
             "type": "object",
             "propertyNames": {"pattern": "^ERS-[A-Z]{3}-[0-9]{2}$"},

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **Industry taxonomy mappings** (`docs/TAXONOMIES.md`). A mapping can now give a scheme `version`, a `relation` (exact, closest or partial) and a `note`, and processes in answers and assessment files can carry mappings too. Every catalogue entry now maps to a BIAN v14.0 service domain. APQC PCF mappings are left empty until checked against the PCF download.
+- The specification records which external schemes may be bundled and which may only be referenced, and names BPMN 2.0 and OCEL 2.0 as the intended import and export formats.
+
 ## 0.2.0 (draft) — 2026-10-24
 
 A standard way to collect inputs, and the evidence behind the method.
