@@ -25,7 +25,13 @@ output:
       type: object
       additionalProperties: {type: number, minimum: 0, maximum: 1}
 mappings:
-  apqc_pcf: null
+  apqc_pcf: null           # To map against the PCF download, with its attribution; see docs/TAXONOMIES.md.
+  bian_service_domain:
+    ref: Document Services
+    version: "14.0.0"
+    relation: partial
+    source: https://github.com/bian-official/public/tree/main/release14.0.0
+    note: BIAN manages documents; field extraction is one operation on them.
 examples:
   - name: Supplier invoice
     input: {document_ref: "docstore://invoices/2026/10/INV-0042.pdf", document_type: invoice}
