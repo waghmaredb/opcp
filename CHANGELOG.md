@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Register export** (`opcp scorecard export`, `docs/REGISTERS.md`). Suggests EU DORA register of information values (B_07.01 substitutability, reason, exit plan, reintegration and alternative providers, plus the B_02.02 end date and notice period) for each critical process, with the reasoning for each value. It is a suggestion for review, not a filing, and never suggests "Not substitutable". The UK, APRA and MAS registers are listed as not yet supported.
+
 ## 0.2.0 (draft) — 2026-10-24
 
 A standard way to collect inputs, and the evidence behind the method.

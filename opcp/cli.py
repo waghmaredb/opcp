@@ -52,6 +52,24 @@ def _scorecard_example(args: argparse.Namespace) -> int:
     return 0
 
 
+def _scorecard_export(args: argparse.Namespace) -> int:
+    from .registers import export_file
+
+    text = export_file(args.path, args.register)
+    if not args.output:
+        sys.stdout.write(text)
+        return 0
+    path = Path(args.output)
+    if path.exists() and not args.force:
+        print(f"{path} already exists. Use --force to overwrite.", file=sys.stderr)
+        return 1
+    path.write_text(text, encoding="utf-8")
+    print(f"Wrote suggested {args.register.upper()} register values to {path}.\n"
+          "These are suggestions for review, not a filing: check each value against your own records,\n"
+          "and fill in the contract reference and provider code columns. See docs/REGISTERS.md.")
+    return 0
+
+
 def _scorecard_form(args: argparse.Namespace) -> int:
     import json
 
@@ -131,6 +149,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("path", nargs="?", default="assessment-form.html")
     p.add_argument("--force", action="store_true", help="Overwrite an existing file")
     p.set_defaults(func=_scorecard_form)
+    p = scs.add_parser("export", help="Suggest regulatory register values (EU DORA) from an assessment")
+    p.add_argument("path")
+    p.add_argument("--register", choices=["dora"], default="dora", help="Which register (only dora for now)")
+    p.add_argument("-o", "--output", help="Write CSV to this path (default: print it)")
+    p.add_argument("--force", action="store_true", help="Overwrite an existing file")
+    p.set_defaults(func=_scorecard_export)
     p = scs.add_parser("example", help="Copy a filled-in hypothetical example")
     p.add_argument("path", nargs="?", default="example-assessment.yaml")
     p.add_argument("--force", action="store_true", help="Overwrite an existing file")
