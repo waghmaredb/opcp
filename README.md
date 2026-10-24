@@ -44,6 +44,8 @@ If your system says `opcp` is not found, use `python -m opcp` instead, for examp
 
 Prefer a text editor? Answers files can also be written by hand in YAML; see [`examples/example-bank-answers.yaml`](examples/example-bank-answers.yaml).
 
+Running it as a pilot across several processes? [docs/PILOT.md](docs/PILOT.md) sets out a six-week plan, who answers what, and a readout agenda. [docs/SWAP-DRILL.md](docs/SWAP-DRILL.md) explains how to rehearse a supplier swap, so a time-to-swap figure becomes proven rather than estimated.
+
 ### What the report rests on, and its limits
 
 - **A standard question bank.** Every firm answers the same [22 questions](questions/exit-readiness.yaml) with the same anchored options, so results are comparable.
@@ -51,6 +53,8 @@ Prefer a text editor? Answers files can also be written by hand in YAML; see [`e
 - **Clause-level references.** Questions cite the obligations they relate to across DORA and its technical standards, the EU Data Act, EBA, APRA CPS 230, MAS, the PRA, the FSB, the Basel Committee, IOSCO, NIST and CSA: 74 references to 15 sources. Each source records how its text was checked, and a second reviewer spot-checked about 45 locators. See [docs/REFERENCES.md](docs/REFERENCES.md).
 - **Published research.** [docs/EVIDENCE.md](docs/EVIDENCE.md) sets out why each measure matters, from 20 verified sources: peer-reviewed papers, supervisory and central-bank analysis, a competition-authority decision, government and intergovernmental reports, an industry outage study and one preprint (labelled as such).
 - **Honest status.** Every report says it is a self-assessment against a published method, not a certification, and shows who prepared it and whether it was independently reviewed.
+
+Already filing an EU DORA register of information? `opcp scorecard export answers.json -o dora.csv` suggests register values from your answers, with the reasoning for each. See [docs/REGISTERS.md](docs/REGISTERS.md).
 
 Open `report.html`. Then assess your own processes:
 
