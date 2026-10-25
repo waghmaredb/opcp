@@ -129,6 +129,19 @@ def _conformance_demo(args: argparse.Namespace) -> int:
     return 0 if ok and runtime.passed else 1
 
 
+def _ocel(args: argparse.Namespace) -> int:
+    from .ocel import export_file
+
+    text = export_file(args.path)
+    path = Path(args.output)
+    if path.exists() and not args.force:
+        print(f"{path} already exists. Use --force to overwrite.", file=sys.stderr)
+        return 1
+    path.write_text(text, encoding="utf-8")
+    print(f"Wrote an OCEL 2.0 event log to {path}. Open it in a process-mining tool that reads OCEL 2.0 JSON.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="opcp", description="Open Process Control Plane tools. Everything runs locally.")
     parser.add_argument("--version", action="version", version=f"opcp {__version__}")
@@ -164,6 +177,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("kind", choices=sorted(KINDS))
     p.add_argument("paths", nargs="+")
     p.set_defaults(func=_validate)
+
+    p = sub.add_parser("ocel", help="Convert an exported event log (JSON lines) to OCEL 2.0 JSON for process mining")
+    p.add_argument("path")
+    p.add_argument("-o", "--output", default="events.ocel.json", help="Where to write (default: events.ocel.json)")
+    p.add_argument("--force", action="store_true", help="Overwrite an existing file")
+    p.set_defaults(func=_ocel)
 
     p = sub.add_parser("demo", help="Run the reference runtime with simulated suppliers")
     p.set_defaults(func=_demo)
