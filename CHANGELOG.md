@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **Shadow routing** (spec section 9.5, `opcp shadow-report`). A route can name a shadow supplier that receives copies of selected requests. Its output is compared field by field with the live result and recorded, never acted on. It runs only for R0 capabilities and only to a supplier that passes every eligibility filter. `opcp shadow-report` summarises a drill from an exported event log. `docs/SWAP-DRILL.md` now uses it.
+- **Fix:** an empty `EventLog` passed to `ControlPlane` was silently replaced by a new one, because an empty log is falsy. The runtime now uses the log it is given.
+
 ## 0.2.0 (draft) — 2026-10-24
 
 A standard way to collect inputs, and the evidence behind the method.

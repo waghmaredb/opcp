@@ -13,6 +13,7 @@ from .contract import Contract
 from .envelope import CLASSIFICATIONS, Request, Response, classification_rank
 from .eventlog import EventLog
 from .gate import AuthorityGate, GateResult
+from .rclass import RClass
 from .router import Route, concentration, eligible, exclusion_reasons, order
 
 
@@ -48,8 +49,8 @@ class ControlPlane:
         self.contracts = dict(contracts)
         self.adapters = {a.profile.adapter_id: a for a in adapters}
         self.routes = {r.capability: r for r in routes}
-        self.gate = gate or AuthorityGate()
-        self.log = log or EventLog()
+        self.gate = gate if gate is not None else AuthorityGate()
+        self.log = log if log is not None else EventLog()  # an empty log is falsy, so test for None
         self.today = today
         self.store_values = store_values
         self.require_accountable_role = require_accountable_role
@@ -68,6 +69,8 @@ class ControlPlane:
             ids = set(route.candidates) | {i for ids in route.segments.values() for i in ids}
             if route.escalation:
                 ids.add(route.escalation)
+            if route.shadow:
+                ids.add(route.shadow.adapter)
             for adapter_id in sorted(ids):
                 adapter = self.adapters.get(adapter_id)
                 if adapter is None:
@@ -191,7 +194,9 @@ class ControlPlane:
         for adapter in ranked:
             response = self._attempt(adapter, contract, request, leased, route, why, verdict, attempts)
             if response is not None:
-                return finish(response, verdict)
+                done = finish(response, verdict)  # the live response is complete before any shadow work
+                self._shadow(route, contract, request, leased, done, adapter, verdict, today)
+                return done
 
         # Escalation (spec 9.1, 9.3)
         if route.escalation and route.escalation not in {a.profile.adapter_id for a in ranked}:
@@ -253,3 +258,55 @@ class ControlPlane:
             supplier_id=adapter.profile.supplier_id,
             adapter_version=adapter.profile.adapter_version,
         )
+
+    def _shadow(self, route: Route, contract: Contract, request: Request, leased: dict, live: Response,
+                served_by: Adapter, verdict: GateResult, today: dt.date) -> None:
+        """Copy the request to the route's shadow supplier and record how its output compares (spec 9.5).
+
+        Nothing here can change the live response: the shadow result is never returned or acted on, and
+        any failure is only recorded.
+        """
+        spec = route.shadow
+        if spec is None or live.status != "ok" or not spec.selects(request.idempotency_key):
+            return
+        trace = request.trace_id
+        aid = spec.adapter
+        base = {"capability": contract.id, "adapter": aid, "live_adapter": served_by.profile.adapter_id}
+        if aid == served_by.profile.adapter_id:
+            self.log.append("shadow", trace, **base, outcome="skipped", reason="the shadow supplier served the live request")
+            return
+        if verdict.rclass > RClass.R0:  # a copy of an action is still an action
+            self.log.append("shadow", trace, **base, outcome="skipped", reason=f"shadow runs only for R0; gate applied {verdict.rclass}")
+            return
+        adapter = self.adapters[aid]
+        reasons = exclusion_reasons(adapter, contract, request, today, verdict.rclass)
+        if reasons:  # copying data to a supplier that is not eligible would be a disclosure
+            self.log.append("shadow", trace, **base, outcome="skipped", reason="not eligible: " + "; ".join(reasons))
+            return
+        started = time.perf_counter()
+        try:
+            result = adapter.call(dict(leased), request)
+        except Exception as exc:
+            detail = str(exc) if self.store_values else type(exc).__name__
+            self.log.append("shadow", trace, **base, outcome="error", detail=detail)
+            return
+        latency = (time.perf_counter() - started) * 1000
+        problems = contract.output_errors(result.output)
+        if contract.evidence_required and not result.evidence:
+            problems.append("evidence required but none returned")
+        if problems:
+            adapter.forget(dict(leased), request)
+            shown = problems if self.store_values else [p.split(":")[0] + ": invalid" for p in problems]
+            self.log.append("shadow", trace, **base, outcome="invalid", detail=shown, latency_ms=latency)
+            return
+        declared = list(contract.output_schema.get("properties", {}))
+        fields = list(spec.compare) or declared or sorted(set(live.output or {}) | set(result.output))
+        live_out = live.output or {}
+        agreed = [f for f in fields if live_out.get(f) == result.output.get(f)]
+        disagreed = [f for f in fields if f not in agreed]
+        entry = {**base, "outcome": "ok", "agreed": agreed, "disagreed": disagreed,
+                 "confidence": result.confidence, "live_confidence": live.confidence,
+                 "latency_ms": latency, "cost": result.cost}
+        if self.store_values:
+            entry["differences"] = {f: {"live": live_out.get(f), "shadow": result.output.get(f)} for f in disagreed}
+        self.log.append("shadow", trace, **entry)
