@@ -15,7 +15,8 @@ The workflow checks that the tag matches the package version, builds the package
 
 - the wheel and source archive;
 - `opcp-exit-readiness-form-<version>.html`, the offline form;
-- `opcp-example-report-<version>.html`, the report for the hypothetical example bank.
+- `opcp-example-report-<version>.html`, the report for the hypothetical example bank;
+- `opcp-example-readout-<version>.html`, the sponsor readout for the same example.
 
 ## One-off PyPI setup (trusted publishing, no passwords or tokens)
 
