@@ -48,8 +48,8 @@ class ControlPlane:
         self.contracts = dict(contracts)
         self.adapters = {a.profile.adapter_id: a for a in adapters}
         self.routes = {r.capability: r for r in routes}
-        self.gate = gate or AuthorityGate()
-        self.log = log or EventLog()
+        self.gate = gate if gate is not None else AuthorityGate()
+        self.log = log if log is not None else EventLog()  # an empty log is falsy, so test for None
         self.today = today
         self.store_values = store_values
         self.require_accountable_role = require_accountable_role
