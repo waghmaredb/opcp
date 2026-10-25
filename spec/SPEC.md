@@ -189,7 +189,7 @@ Among eligible suppliers, a route selects according to its mode. Where a mode us
 | `pinned` | Use the primary supplier; on failure, try fallbacks in order. | The default for regulated work, where each supplier is a third-party arrangement and changes are deliberate. |
 | `segmented` | Try the request segment's suppliers first, e.g. by country or risk band, then the default candidates as fallbacks. | Different suppliers by market, language or product. |
 | `cascade` | Try suppliers in order; move to the next when confidence is below a threshold. The last step **SHOULD** be a human supplier. | Identity checks and document extraction. |
-| `weighted` | Split traffic by weight. | Migrations and shadow drills. |
+| `weighted` | Split traffic by weight. | Migrations and gradual cutovers to a new supplier. |
 | `best_score` | Pick the highest selection score per call. | Low-risk `generate` and `retrieve` work only. A runtime **MUST NOT** use this mode for capabilities above R1. |
 
 Supplier kind is independent of archetype. A human team **MAY** fulfil any contract, such as a reviewer team fulfilling `verify-identity` as the last step of a cascade. The `human_task` archetype is for work that is inherently human, where the contract itself describes a work item and an outcome.
@@ -197,6 +197,19 @@ Supplier kind is independent of archetype. A human team **MAY** fulfil any contr
 ### 9.4 Concentration limits
 
 A business **MAY** set a concentration limit: the largest share of its critical processes that any one supplier may fulfil as primary. A runtime or registry **MUST** reject a route change that would breach the limit, unless the breach is recorded as an approved exception.
+
+### 9.5 Shadow
+
+A route **MAY** name a shadow supplier. The runtime then sends a copy of each selected request to that supplier, compares its output with the live result, and records the comparison. It never returns or acts on the shadow output. Shadow is how a business rehearses a swap on real traffic before it needs one: it turns an estimated time-to-swap into evidence (section 12.3).
+
+- A runtime **MUST** run a shadow call only when the authority gate applied R0 to the request. A copy of an action is still an action.
+- The shadow supplier **MUST** pass every eligibility filter in section 9.1 before it receives any data. Copying data to a supplier that is not eligible would be a disclosure. If it fails, the runtime records that it skipped the call and why.
+- The shadow supplier receives only the leased input (section 11.2), and its output **MUST** be validated against the contract like any other.
+- Nothing about the shadow call may change the live response: not its result, its status or its timing. A shadow failure is recorded and nothing more.
+- `sample` selects a share of requests deterministically from the idempotency key, so the same request is always in or out of the drill. `compare` names the output fields to compare; by default, every field the contract's output declares.
+- The runtime **MUST** record each shadow call in the event log with the fields compared, which agreed and which did not. Output values are recorded only where the deployment records values (section 14).
+
+*(informative)* The reference runtime summarises a drill with `opcp shadow-report <exported log>`.
 
 ## 10. Authority gate
 
