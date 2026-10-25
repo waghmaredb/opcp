@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Sponsor readout** (`opcp scorecard readout`). A two-page, printable pack for the pilot's decision meeting. It shows a grid of every critical process against the seven measures, summary tiles (ratings, evidence coverage, proven swaps, largest supplier share), the decisions for the sponsor in order of urgency, and each renewing contract's last day to give notice (end date minus notice period). Release builds attach an example readout.
+
 ## 0.2.0 (draft) — 2026-10-24
 
 A standard way to collect inputs, and the evidence behind the method.

@@ -70,6 +70,18 @@ def _scorecard_export(args: argparse.Namespace) -> int:
     return 0
 
 
+def _scorecard_readout(args: argparse.Namespace) -> int:
+    from .readout import readout_file
+
+    path = Path(args.output)
+    if path.exists() and not args.force:
+        print(f"{path} already exists. Use --force to overwrite.", file=sys.stderr)
+        return 1
+    path.write_text(readout_file(args.path), encoding="utf-8")
+    print(f"Readout written to {path}. Open it in a browser; print it to PDF for the meeting.")
+    return 0
+
+
 def _scorecard_form(args: argparse.Namespace) -> int:
     import json
 
@@ -149,6 +161,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("path", nargs="?", default="assessment-form.html")
     p.add_argument("--force", action="store_true", help="Overwrite an existing file")
     p.set_defaults(func=_scorecard_form)
+    p = scs.add_parser("readout", help="Write the sponsor readout: decisions, renewals and a one-page grid")
+    p.add_argument("path")
+    p.add_argument("-o", "--output", default="readout.html", help="Where to write the HTML (default: readout.html)")
+    p.add_argument("--force", action="store_true", help="Overwrite an existing file")
+    p.set_defaults(func=_scorecard_readout)
     p = scs.add_parser("export", help="Suggest regulatory register values (EU DORA) from an assessment")
     p.add_argument("path")
     p.add_argument("--register", choices=["dora"], default="dora", help="Which register (only dora for now)")

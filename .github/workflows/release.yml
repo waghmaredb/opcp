@@ -57,6 +57,7 @@ jobs:
           mkdir -p assets
           opcp scorecard form "assets/opcp-exit-readiness-form-$v.html"
           opcp scorecard run examples/example-bank-answers.yaml -o "assets/opcp-example-report-$v.html"
+          opcp scorecard readout examples/example-bank-answers.yaml -o "assets/opcp-example-readout-$v.html"
           cp dist/*.whl dist/*.tar.gz assets/
       - uses: actions/upload-artifact@v4
         with:
