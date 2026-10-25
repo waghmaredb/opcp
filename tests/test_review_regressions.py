@@ -216,3 +216,17 @@ def test_lease_fails_closed_for_free_form_and_composite_schemas():
     leased, withheld = c.lease({"full_name": "A", "vars": {"ssn": "1"}, "either": {"ssn": "1"}, "open": {"k": "v"}})
     assert leased == {"full_name": "A", "vars": {}, "open": {"k": "v"}}
     assert "vars.ssn" in withheld and "either" in withheld
+
+
+def test_an_empty_event_log_passed_in_is_the_one_used():
+    # An empty EventLog is falsy, and `log or EventLog()` silently replaced it with a new one.
+    from opcp.contract import load_catalogue
+    from opcp.demo import TODAY
+    from opcp.eventlog import EventLog
+    from opcp.gate import AuthorityGate
+    from opcp.runtime import ControlPlane
+    from opcp._paths import data_dir
+
+    log, gate = EventLog(), AuthorityGate()
+    plane = ControlPlane(load_catalogue(data_dir("catalogue")), [], [], gate=gate, log=log, today=TODAY)
+    assert plane.log is log and plane.gate is gate
