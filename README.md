@@ -56,6 +56,8 @@ Running it as a pilot across several processes? [docs/PILOT.md](docs/PILOT.md) s
 
 Preparing for a decision meeting? `opcp scorecard readout answers.json -o readout.html` writes a two-page sponsor pack: where each process stands, the decisions to take, and each contract's last day to give notice.
 
+Using process-mining tools? `opcp ocel events.jsonl -o events.ocel.json` converts the runtime's event log to OCEL 2.0. See [docs/PROCESS-MINING.md](docs/PROCESS-MINING.md).
+
 Already filing an EU DORA register of information? `opcp scorecard export answers.json -o dora.csv` suggests register values from your answers, with the reasoning for each. See [docs/REGISTERS.md](docs/REGISTERS.md).
 
 Open `report.html`. Then assess your own processes:
