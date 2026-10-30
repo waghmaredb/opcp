@@ -72,6 +72,7 @@ class SwapResult:
 
     def evidence(self) -> dict[str, Any]:
         """Return a schema-compatible OPCP v0.3 swap-drill result."""
+        technical_cutover_days = self.measured_seconds / 86400
         return {
             "opcp_version": "0.3",
             "id": self.drill_id,
@@ -120,13 +121,15 @@ class SwapResult:
             "time_to_swap": {
                 "contracting_days": self.contracting_days,
                 "onboarding_days": self.onboarding_days,
-                "technical_cutover_days": self.measured_seconds / 86400,
+                "technical_cutover_days": technical_cutover_days,
                 "confidence": self.time_to_swap_confidence,
                 **({"drill_date": self.drill_date} if self.drill_date else {}),
             },
             "started_at": self.started_at,
             "completed_at": self.completed_at,
             "decision": "passed" if self.passed else "failed",
+            # Backward-compatible convenience field retained for the v0.2 MVP CLI/tests.
+            "measured_time_to_swap_hours": round(self.measured_seconds / 3600, 3),
         }
 
 
@@ -171,6 +174,8 @@ def evaluate_swap(
         drill_date = date.today().isoformat()
     if drill_date:
         date.fromisoformat(drill_date)
+    if execution_mode not in {"shadow", "rehearsal", "production"}:
+        raise ValueError("execution_mode must be shadow, rehearsal, or production")
 
     regression_pass = all(case.passed for case in cases)
     material_exception_regression = all(
@@ -210,19 +215,19 @@ def evaluate_swap(
 
 
 def validate_swap_result(result: Mapping[str, Any]) -> list[str]:
-    """Perform the protocol-level invariants that are independent of JSON Schema."""
+    """Perform protocol-level invariants independent of JSON Schema."""
     errors: list[str] = []
     gates = result.get("promotion_gates", {})
-    decision = result.get("decision")
-    expected = "passed" if all(gates.get(name) is True for name in (
+    gate_names = (
         "process_unchanged",
         "context_lease_unchanged",
         "authority_policy_unchanged",
         "contract_conformance",
         "regression_pass",
         "material_exception_regression",
-    )) else "failed"
-    if decision != expected:
+    )
+    expected = "passed" if all(gates.get(name) is True for name in gate_names) else "failed"
+    if result.get("decision") != expected:
         errors.append(f"decision must be {expected!r} for the supplied promotion gates")
     execution = result.get("execution", {})
     if execution.get("mode") == "shadow" and execution.get("customer_visible"):
