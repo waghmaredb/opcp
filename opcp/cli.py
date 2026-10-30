@@ -1,4 +1,4 @@
-"""Command-line interface: ``opcp scorecard``, ``opcp validate``, ``opcp conformance-demo``, ``opcp demo``."""
+"""Command-line interface: ``opcp scorecard``, ``opcp validate``, ``opcp conformance-demo``, ``opcp demo`` and ``opcp swap-demo``."""
 
 from __future__ import annotations
 
@@ -154,6 +154,29 @@ def _ocel(args: argparse.Namespace) -> int:
     return 0
 
 
+def _swap_demo(args: argparse.Namespace) -> int:
+    import json
+
+    from .swap import SwapCase, evaluate_swap
+
+    cases = (
+        SwapCase("clean-sme", "pass", "pass", "pass", 0.98, 0.97),
+        SwapCase("name-mismatch", "refer", "refer", "refer", 0.91, 0.90),
+        SwapCase("sanctions-hit", "fail", "fail", "fail", 0.99, 0.99),
+        SwapCase("low-confidence-document", "refer", "refer", "refer", 0.62, 0.65),
+    )
+    result = evaluate_swap(
+        capability="extract-application-documents",
+        incumbent="supplier-a",
+        candidate="supplier-b",
+        cases=cases,
+        measured_seconds=2.5 * 24 * 3600,
+    )
+    evidence = result.evidence()
+    print(json.dumps(evidence, indent=2))
+    return 0 if result.passed else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="opcp", description="Open Process Control Plane tools. Everything runs locally.")
     parser.add_argument("--version", action="version", version=f"opcp {__version__}")
@@ -205,6 +228,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=_demo)
     p = sub.add_parser("conformance-demo", help="Run adapter and runtime conformance checks")
     p.set_defaults(func=_conformance_demo)
+    p = sub.add_parser("swap-demo", help="Run the first AI supplier swap-drill demonstration")
+    p.set_defaults(func=_swap_demo)
     return parser
 
 
