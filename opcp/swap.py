@@ -72,7 +72,6 @@ class SwapResult:
 
     def evidence(self) -> dict[str, Any]:
         """Return a schema-compatible OPCP v0.3 swap-drill result."""
-        technical_cutover_days = self.measured_seconds / 86400
         return {
             "opcp_version": "0.3",
             "id": self.drill_id,
@@ -121,15 +120,13 @@ class SwapResult:
             "time_to_swap": {
                 "contracting_days": self.contracting_days,
                 "onboarding_days": self.onboarding_days,
-                "technical_cutover_days": technical_cutover_days,
+                "technical_cutover_days": self.measured_seconds / 86400,
                 "confidence": self.time_to_swap_confidence,
                 **({"drill_date": self.drill_date} if self.drill_date else {}),
             },
             "started_at": self.started_at,
             "completed_at": self.completed_at,
             "decision": "passed" if self.passed else "failed",
-            # Backward-compatible convenience field retained for the v0.2 MVP CLI/tests.
-            "measured_time_to_swap_hours": round(self.measured_seconds / 3600, 3),
         }
 
 
