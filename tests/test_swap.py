@@ -17,7 +17,7 @@ def test_successful_swap_requires_all_invariants_and_regression():
 
     assert result.passed
     assert result.evidence()["decision"] == "passed"
-    assert result.evidence()["measured_time_to_swap_hours"] == 2.0
+    assert result.evidence()["time_to_swap"]["technical_cutover_days"] == 2 / 24
 
 
 def test_candidate_regression_blocks_promotion():
