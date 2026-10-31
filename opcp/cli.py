@@ -177,6 +177,14 @@ def _swap_demo(args: argparse.Namespace) -> int:
     return 0 if result.passed else 1
 
 
+def _swap_drill(args: argparse.Namespace) -> int:
+    from .swap_drill import run_swap_drill
+
+    result = run_swap_drill(args.path)
+    print(__import__("json").dumps(result, indent=2, sort_keys=True))
+    return 0 if result["promotion_ready"] else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="opcp", description="Open Process Control Plane tools. Everything runs locally.")
     parser.add_argument("--version", action="version", version=f"opcp {__version__}")
@@ -230,6 +238,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=_conformance_demo)
     p = sub.add_parser("swap-demo", help="Run the first AI supplier swap-drill demonstration")
     p.set_defaults(func=_swap_demo)
+    p = sub.add_parser("swap-drill", help="Evaluate an OPCP v0.3 swap-drill evidence record")
+    p.add_argument("path")
+    p.set_defaults(func=_swap_drill)
     return parser
 
 
